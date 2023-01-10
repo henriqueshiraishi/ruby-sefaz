@@ -2,7 +2,7 @@
 
 require_relative "sefaz/version"
 
-module Sefaz
+module SEFAZ
   class Error < StandardError; end
   # Your code goes here...
 end
