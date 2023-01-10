@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'savon'
+
 require_relative "sefaz/version"
 
 module SEFAZ
