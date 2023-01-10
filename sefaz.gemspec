@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/sefaz/version"
+require_relative "lib/sefaz/utils/version"
 
 Gem::Specification.new do |spec|
   spec.name    = "sefaz"
-  spec.version = SEFAZ::VERSION
+  spec.version = SEFAZ::Utils::VERSION
   spec.authors = ["Henrique Shiraishi"]
   spec.email   = ["henriqueashiraishi@gmail.com"]
 

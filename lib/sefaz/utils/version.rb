@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
 module SEFAZ
-  VERSION = "0.2.0"
+  module Utils
+    VERSION = "0.3.0"
+  end
 end

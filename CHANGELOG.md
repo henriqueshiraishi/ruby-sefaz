@@ -1,5 +1,11 @@
 ## [Unreleased]
 
+## [0.3.0] - 2023-01-10
+
+- Adding WSDL manager
+- Adding Connection manager
+- Adding module NFE with 'connected?' and 'statusDoServico' service
+
 ## [0.2.0] - 2023-01-10
 
 - Adding savon gem

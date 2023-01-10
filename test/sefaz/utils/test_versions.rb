@@ -5,7 +5,7 @@ require "test_helper"
 class TestVersion < Minitest::Test
 
   def test_if_gem_has_a_version_number
-    refute_nil ::SEFAZ::VERSION
+    refute_nil ::SEFAZ::Utils::VERSION
   end
 
   def test_if_savon_has_a_version_number
