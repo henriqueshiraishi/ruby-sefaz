@@ -20,7 +20,7 @@ module SEFAZ
     def statusDoServico
       @versao, @wsdl = SEFAZ::Utils::WSDL.get(:NfeStatusServico, @ambiente, @uf)
       @conn = SEFAZ::Utils::Connection.new(@pkcs12, @wsdl, @versao, @uf)
-      @mensagem = { nfeDadosMsg: { consStatServ: { versao: @versao, tpAmb: @ambiente, cUF: @uf, xServ: 'STATUS' } }, attributes!: { nfeDadosMsg: { xmlns: @wsdl } } }
+      @mensagem = { consStatServ: { tpAmb: @ambiente, cUF: @uf, xServ: 'STATUS' }, attributes!: { consStatServ: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
       return @conn.call(:nfe_status_servico_nf, @mensagem)
     end
 

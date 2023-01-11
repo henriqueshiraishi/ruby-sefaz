@@ -14,7 +14,7 @@ module SEFAZ
           ssl_verify_mode:            :none,
           ssl_cert:                   @pkcs12.certificate,
           ssl_cert_key:               @pkcs12.key,
-          soap_header:                { nfeCabecMsg: { versaoDados: @versao, cUF: @uf }, attributes!: { nfeCabecMsg: { xmlns: @wsdl } } },
+          soap_header:                { nfeCabecMsg: { versaoDados: @versao, cUF: @uf }, attributes!: { nfeCabecMsg: { xmlns: "http://www.portalfiscal.inf.br/nfe" } } },
           soap_version:               2,
           namespace_identifier:       nil
         )

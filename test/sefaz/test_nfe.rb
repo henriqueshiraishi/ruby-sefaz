@@ -16,7 +16,7 @@ class TestNFE < Minitest::Test
     password = "1234"
     nfe = SEFAZ::NFE.new("2", "35", certificate, password)
     response = nfe.statusDoServico
-    assert_equal response[:nfe_result_msg][:ret_cons_stat_serv][:c_stat], "242"
+    assert_equal response[:nfe_result_msg][:ret_cons_stat_serv][:c_stat], "107"
   end
 
 end

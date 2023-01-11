@@ -1,5 +1,9 @@
 ## [Unreleased]
 
+## [0.3.1] - 2023-01-10
+
+- Fix: Connection bug with xmlns attribute
+
 ## [0.3.0] - 2023-01-10
 
 - Adding WSDL manager
