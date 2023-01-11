@@ -1,5 +1,15 @@
 ## [Unreleased]
 
+- consultarRecibo service
+- inutilizarNF service
+- calculaChaveInutilizacao service
+- assinarNota service
+
+## [0.4.0] - 2023-01-11
+
+- Adding consultarNF service
+- Adding consultarCadastro service
+
 ## [0.3.1] - 2023-01-10
 
 - Fix: Connection bug with xmlns attribute
