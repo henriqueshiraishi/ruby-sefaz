@@ -4,27 +4,21 @@ require "test_helper"
 
 class TestNFE < Minitest::Test
 
-  def test_if_the_nfe_is_connected
-    certificate = File.read("certificate.pfx")
-    password = "1234"
-    nfe = SEFAZ::NFE.new("2", "35", certificate, password)
-    assert_equal nfe.connected?, true
+  def setup
+    @webService = SEFAZ::NFE.new
+    @webService.setaAmbiente({ ambiente: "2", uf: "35" })
+    @webService.setaPFXTss({ pfx: File.read("certificate.pfx"), senha: "1234" })
+    @webService.setaPFXAss({ pfx: File.read("certificate.pfx"), senha: "1234" })
   end
 
   def test_if_the_statusDoServico_is_working
-    certificate = File.read("certificate.pfx")
-    password = "1234"
-    nfe = SEFAZ::NFE.new("2", "35", certificate, password)
-    response = nfe.statusDoServico
+    response = @webService.statusDoServico
     assert_equal response[:nfe_result_msg][:ret_cons_stat_serv][:c_stat], "107"
   end
 
   def test_is_the_consultarNF_is_working
     chaveNF = "35221221684155000164550010000002361125429343"
-    certificate = File.read("certificate.pfx")
-    password = "1234"
-    nfe = SEFAZ::NFE.new("2", "35", certificate, password)
-    response = nfe.consultarNF(chaveNF)
+    response = @webService.consultarNF(chaveNF)
     assert_equal response[:nfe_result_msg][:ret_cons_sit_n_fe][:c_stat], "101"
   end
 
@@ -32,10 +26,7 @@ class TestNFE < Minitest::Test
     nroDocumento = "01.014.625/0001-75"
     tpDocumento = "CNPJ"
     uf = "SP"
-    certificate = File.read("certificate.pfx")
-    password = "1234"
-    nfe = SEFAZ::NFE.new("2", "35", certificate, password)
-    response = nfe.consultarCadastro(nroDocumento, tpDocumento, uf)
+    response = @webService.consultarCadastro(nroDocumento, tpDocumento, uf)
     assert_equal response[:nfe_result_msg][:ret_cons_cad][:inf_cons][:c_stat], "259"
   end
 

@@ -5,6 +5,14 @@
 - calculaChaveInutilizacao service
 - assinarNota service
 
+## [0.4.1] - 2023-01-11
+
+- Adding README.md
+- Allowing to set PFX transmission and signature
+- Fix: Nomenclatures
+- Fix: Organizations
+- Fix: WSDL Service returning only URL
+
 ## [0.4.0] - 2023-01-11
 
 - Adding consultarNF service

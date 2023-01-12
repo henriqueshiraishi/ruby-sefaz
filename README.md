@@ -1,33 +1,91 @@
-# Sefaz
+# Biblioteca SEFAZ
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sefaz`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Gem Version](https://badge.fury.io/rb/sefaz.svg)](https://badge.fury.io/rb/sefaz)
 
-TODO: Delete this and the text above, and describe your gem
+## Instalação
 
-## Installation
+Biblioteca SEFAZ está disponível no RubyGems e pode ser instalada via:
 
-Install the gem and add to the application's Gemfile by executing:
+```
+$ gem install sefaz
+```
 
-    $ bundle add sefaz
+ou adiciona no arquivo Gemfile e execute o `bundle install`:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+```ruby
+gem 'sefaz'
+```
 
-    $ gem install sefaz
+## Configuração
 
-## Usage
+Crie uma instância da classe `SEFAZ::NFE` para acessar os serviços disponíveis na biblioteca:
 
-TODO: Write usage instructions here
+```ruby
+@webService = SEFAZ::NFE.new
+```
 
-## Development
+Após instanciar, é necessário parametrizar a biblioteca:
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+- Configuração do Ambiente
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+@webService.setaAmbiente({
+    ambiente: "1",  # 1=Produção; 2=Homologação
+    uf: "35"        # Código IBGE do Estado
+})
+```
 
-## Contributing
+- Configuração do PFX de transmissão
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/henriqueshiraishi/ruby-sefaz.
+```ruby
+@webService = setaPFXTss({
+    pfx: File.read("certificado_tss.pfx"),
+    senha: "senha_super_secreta"
+})
+```
+*Observação: A biblioteca não permite o certificado A3 para transmissão SOAP. Lembrando que, o certificado de transmissão pode ser diferente do certificado de assinatura de XML.*
 
-## License
+- Configuração do PFX de assinatura
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+```ruby
+@webService.setaPFXAss({
+    pfx: File.read("certificado_ass.pfx"),
+    senha: "senha_super_secreta"
+})
+```
+*Observação: Caso é utilizado certificado A3 para assinatura de XML, não é necessário executar essa configuração. A biblioteca disponibiliza métodos que permite exportar o XML em HASH para realizar tratamento externo, como por exemplo, assinatura local de XML.*
+
+## Utilização
+
+Após a configuração, é possível acessar os seguintes serviços:
+```ruby
+# Consulta Status SEFAZ
+@webService.statusDoServico
+# => XML no formato de HASH
+
+# Consulta Situação NF
+# @chaveNF(String) = Chave de acesso de uma NF
+@webService.consultarNF(@chaveNF)
+# => XML no formato de HASH
+
+# Consulta Cadastro
+# @nroDocumento(String) = Número do documento
+# @tpDocumento(String)  = CNPJ/CPF/IE
+# @uf(String) = Sigla do estado que será consultado (SP; MG; RJ; ...)
+@webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
+# => XML no formato de HASH
+```
+
+## Desenvolvimento
+
+Depois de verificar o repositório, execute `bin/setup` para instalar as dependências. Em seguida, execute `rake test` para executar os testes. Você também pode executar `bin/console` para um prompt interativo que permitirá que você experimente.
+
+Para instalar esta gem em sua máquina local, execute `bundle exec rake install`. Para lançar uma nova versão, atualize o número da versão em `version.rb`, e então execute `bundle exec rake release`, que criará uma tag git para a versão, push git commits e a tag criada, e envia o pacote `.gem` para o [rubygems.org](https://rubygems.org).
+
+## Contribuição
+
+Relatórios de bugs e solicitações pull são bem-vindos no GitHub em https://github.com/henriqueshiraishi/ruby-sefaz.
+
+## Licença
+
+A gema está disponível como código aberto sob os termos da [MIT License](https://opensource.org/licenses/MIT).

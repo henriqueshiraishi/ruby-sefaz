@@ -23,15 +23,14 @@ module SEFAZ
   
       def connected?; (@conn.operations.length > 0) end
       def operations; (@conn.operations) end
-      def get_connection; @conn end
 
-      def build(servico, mensagem)
-        request = @conn.build_request(servico, message: mensagem)
+      def build(operacao, hash)
+        request = @conn.build_request(operacao, message: hash)
         request.body
       end
   
-      def call(servico, mensagem)
-        response = @conn.call(servico, message: mensagem)
+      def call(operacao, hash)
+        response = @conn.call(operacao, message: hash)
         response.body
       end
   

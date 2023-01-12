@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email   = ["henriqueashiraishi@gmail.com"]
 
   spec.summary     = "Módulo de serviços da SEFAZ"
-  spec.description = "Biblioteca de cálculos, serviços e transmissão da SEFAZ"
+  spec.description = "Biblioteca de serviços e transmissão da SEFAZ"
   spec.homepage    = "https://github.com/henriqueshiraishi/ruby-sefaz"
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 2.6.0"

@@ -3,48 +3,58 @@
 module SEFAZ
   class NFE
 
-    SERVICES = %i[ connected? statusDoServico ]
+    SERVICES = %i[ setaAmbiente setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro ]
 
-    def initialize(ambiente, uf, pfx, senha)
-      @pkcs12   = OpenSSL::PKCS12.new(pfx, senha)
-      @ambiente = ambiente
-      @uf       = uf
+    def initialize
     end
 
-    def connected?
-      @versao = "4.00"
-      _, @wsdl = SEFAZ::Utils::WSDL.get(:NfeStatusServico, @ambiente, @uf)
-      @conn = SEFAZ::Utils::Connection.new(@pkcs12, @wsdl, @versao, @uf)
-      return @conn.connected?
+    def setaAmbiente(params = {})
+      @uf = params[:uf]
+      @ambiente = params[:ambiente]
     end
 
+    def setaPFXTss(params = {})
+      @pkcs12Tss = OpenSSL::PKCS12.new(params[:pfx], params[:senha])
+    end
+
+    def setaPFXAss(params = {})
+      @pkcs12Ass = OpenSSL::PKCS12.new(params[:pfx], params[:senha])
+    end
+
+    # Consulta Status SEFAZ
     def statusDoServico
       @versao = "4.00"
-      _, @wsdl = SEFAZ::Utils::WSDL.get(:NfeStatusServico, @ambiente, @uf)
-      @conn = SEFAZ::Utils::Connection.new(@pkcs12, @wsdl, @versao, @uf)
-      @mensagem = { consStatServ: { tpAmb: @ambiente, cUF: @uf, xServ: 'STATUS' }, attributes!: { consStatServ: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
-      return @conn.call(:nfe_status_servico_nf, @mensagem)
+      @hash = { consStatServ: { tpAmb: @ambiente, cUF: @uf, xServ: 'STATUS' }, attributes!: { consStatServ: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
+      @wsdl = SEFAZ::Utils::WSDL.get(:NfeStatusServico, @ambiente, @uf)
+      @conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, @wsdl, @versao, @uf)
+      return @conn.call(:nfe_status_servico_nf, @hash)
     end
 
+    # Consulta Situação NF
+    # @chaveNF(String) = Chave de acesso de uma NF
     def consultarNF(chaveNF)
       @versao = "4.00"
-      _, @wsdl = SEFAZ::Utils::WSDL.get(:NfeConsultaProtocolo, @ambiente, @uf)
-      @conn = SEFAZ::Utils::Connection.new(@pkcs12, @wsdl, @versao, @uf)
-      @mensagem = { consSitNFe: { tpAmb: @ambiente, xServ: 'CONSULTAR', chNFe: chaveNF }, attributes!: { consSitNFe: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
-      return @conn.call(:nfe_consulta_nf, @mensagem)
+      @hash = { consSitNFe: { tpAmb: @ambiente, xServ: 'CONSULTAR', chNFe: chaveNF }, attributes!: { consSitNFe: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
+      @wsdl = SEFAZ::Utils::WSDL.get(:NfeConsultaProtocolo, @ambiente, @uf)
+      @conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, @wsdl, @versao, @uf)
+      return @conn.call(:nfe_consulta_nf, @hash)
     end
 
+    # Consulta Cadastro
+    # @nroDocumento(String) = Número do documento
+    # @tpDocumento(String)  = CNPJ/CPF/IE
+    # @uf(String) = Sigla do estado que será consultado (SP; MG; RJ; ...)
     def consultarCadastro(nroDocumento, tpDocumento, uf)
       @versao = "2.00"
-      _, @wsdl = SEFAZ::Utils::WSDL.get(:NfeConsultaCadastro, @ambiente, @uf)
-      @conn = SEFAZ::Utils::Connection.new(@pkcs12, @wsdl, @versao, @uf)
-      @mensagem = { ConsCad: { infCons: { xServ: 'CONS-CAD', UF: uf } }, attributes!: { ConsCad: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
+      @hash = { ConsCad: { infCons: { xServ: 'CONS-CAD', UF: uf } }, attributes!: { ConsCad: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
       case tpDocumento
-      when 'CNPJ'; @mensagem[:ConsCad][:infCons][:CNPJ] = nroDocumento.to_s.delete("^0-9")
-      when 'CPF';  @mensagem[:ConsCad][:infCons][:CPF]  = nroDocumento.to_s.delete("^0-9")
-      when 'IE';   @mensagem[:ConsCad][:infCons][:IE]   = nroDocumento.to_s.delete("^0-9")
+      when 'CNPJ'; @hash[:ConsCad][:infCons][:CNPJ] = nroDocumento.to_s.delete("^0-9")
+      when 'CPF';  @hash[:ConsCad][:infCons][:CPF]  = nroDocumento.to_s.delete("^0-9")
+      when 'IE';   @hash[:ConsCad][:infCons][:IE]   = nroDocumento.to_s.delete("^0-9")
       end
-      return @conn.call(:consulta_cadastro, @mensagem)
+      @wsdl = SEFAZ::Utils::WSDL.get(:NfeConsultaCadastro, @ambiente, @uf)
+      @conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, @wsdl, @versao, @uf)
+      return @conn.call(:consulta_cadastro, @hash)
     end
 
   end
