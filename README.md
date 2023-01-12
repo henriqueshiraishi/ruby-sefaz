@@ -74,6 +74,11 @@ Após a configuração, é possível acessar os seguintes serviços:
 # @uf(String) = Sigla do estado que será consultado (SP; MG; RJ; ...)
 @webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
 # => XML no formato de HASH
+
+# Consulta Recebido de Lote
+# @numRecibo(String) = Número do recibo do lote de NF-e
+@webService.consultarRecibo(@numRecibo)
+# => XML no formato de HASH
 ```
 
 ## Desenvolvimento

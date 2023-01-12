@@ -57,5 +57,15 @@ module SEFAZ
       return @conn.call(:consulta_cadastro, @hash)
     end
 
+    # Consulta Recebido de Lote
+    # @numRecibo(String) = Número do recibo do lote de NF-e
+    def consultarRecibo(numRecibo)
+      @versao = "4.00"
+      @hash = { consReciNFe: { tpAmb: @ambiente, nRec: numRecibo }, attributes!: { consReciNFe: { xmlns: "http://www.portalfiscal.inf.br/nfe", versao: @versao } } }
+      @wsdl = SEFAZ::Utils::WSDL.get(:NFeRetAutorizacao, @ambiente, @uf)
+      @conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, @wsdl, @versao, @uf)
+      return @conn.call(:nfe_ret_autorizacao_lote, @hash)
+    end
+
   end
 end

@@ -1,9 +1,12 @@
 ## [Unreleased]
 
-- consultarRecibo service
 - inutilizarNF service
 - calculaChaveInutilizacao service
 - assinarNota service
+
+## [0.5.0] - 2023-01-11
+
+- consultarRecibo service
 
 ## [0.4.1] - 2023-01-11
 

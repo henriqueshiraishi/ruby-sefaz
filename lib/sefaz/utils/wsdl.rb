@@ -7,12 +7,12 @@ module SEFAZ
       # Ambiente: 1=Produção; 2=Homologação
       # Operações:
       # - :NfeInutilizacao
-      # - :NfeConsultaProtocolo
-      # - :NfeStatusServico
-      # - :NfeConsultaCadastro
+      # - :NfeConsultaProtocolo - OK (consultarNF)
+      # - :NfeStatusServico     - OK (statusDoServico)
+      # - :NfeConsultaCadastro  - OK (consultarCadastro)
       # - :RecepcaoEvento
       # - :NFeAutorizacao
-      # - :NFeRetAutorizacao
+      # - :NFeRetAutorizacao    - OK (consultarRecibo)
       # UF: código IBGE do Estado
   
       # Método retorna a URL wsdl da SEFAZ, exemplo de consumo:

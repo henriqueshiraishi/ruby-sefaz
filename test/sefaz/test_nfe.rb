@@ -30,4 +30,10 @@ class TestNFE < Minitest::Test
     assert_equal response[:nfe_result_msg][:ret_cons_cad][:inf_cons][:c_stat], "259"
   end
 
+  def test_is_the_consultarRecibo_is_working
+    numRecibo = "351000171600547"
+    response = @webService.consultarRecibo(numRecibo)
+    assert_equal response[:nfe_result_msg][:ret_cons_reci_n_fe][:c_stat], "104"
+  end
+
 end
