@@ -60,25 +60,21 @@ Após instanciar, é necessário parametrizar a biblioteca:
 Após a configuração, é possível acessar os seguintes serviços:
 ```ruby
 # Consulta Status SEFAZ
-@webService.statusDoServico
-# => XML no formato de HASH
+xml, hash = @webService.statusDoServico
 
 # Consulta Situação NF
 # @chaveNF(String) = Chave de acesso de uma NF
-@webService.consultarNF(@chaveNF)
-# => XML no formato de HASH
+xml, hash = @webService.consultarNF(@chaveNF)
 
 # Consulta Cadastro
 # @nroDocumento(String) = Número do documento
 # @tpDocumento(String)  = CNPJ/CPF/IE
 # @uf(String) = Sigla do estado que será consultado (SP; MG; RJ; ...)
-@webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
-# => XML no formato de HASH
+xml, hash = @webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
 
 # Consulta Recebido de Lote
 # @numRecibo(String) = Número do recibo do lote de NF-e
-@webService.consultarRecibo(@numRecibo)
-# => XML no formato de HASH
+xml, hash = @webService.consultarRecibo(@numRecibo)
 ```
 
 ## Desenvolvimento

@@ -14,9 +14,10 @@ module SEFAZ
           ssl_verify_mode:            :none,
           ssl_cert:                   @pkcs12.certificate,
           ssl_cert_key:               @pkcs12.key,
-          soap_header:                { nfeCabecMsg: { versaoDados: @versao, cUF: @uf }, attributes!: { nfeCabecMsg: { xmlns: "http://www.portalfiscal.inf.br/nfe" } } },
+          soap_header:                { nfeCabecMsg: { versaoDados: @versao, cUF: @uf, :@xmlns => "http://www.portalfiscal.inf.br/nfe" } },
           soap_version:               2,
           convert_request_keys_to:    :none,
+          convert_response_tags_to:   lambda { |key| key.to_sym },
           namespace_identifier:       nil
         )
       end
@@ -25,13 +26,11 @@ module SEFAZ
       def operations; (@conn.operations) end
 
       def build(operacao, hash)
-        request = @conn.build_request(operacao, message: hash)
-        request.body
+        @conn.build_request(operacao, message: hash)
       end
   
       def call(operacao, hash)
-        response = @conn.call(operacao, message: hash)
-        response.body
+        @conn.call(operacao, message: hash)
       end
   
     end

@@ -4,6 +4,15 @@
 - calculaChaveInutilizacao service
 - assinarNota service
 
+## [0.5.1] - 2023-01-12
+
+- Adding helper method (SEFAZ.toXML(@hash), SEFAZ.toHASH(@xml))
+- Allowing to services return XML and HASH
+- Allowing to SEFAZ::Utils::Connection#call return response object
+- Fix: Globals variables
+- Fix: Response Savon :LowerCamelCase to :None
+- Changed: README.md
+
 ## [0.5.0] - 2023-01-11
 
 - consultarRecibo service
