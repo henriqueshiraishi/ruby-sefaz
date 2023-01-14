@@ -104,7 +104,7 @@ class TestNFE < Minitest::Test
     assert_equal chaveNF, "ID35230101462500017555001000000023000000023"
   end
 
-  def test_if_the_exportarInutilizarNF_is_working
+  def test_if_the_exportarDadosInutilizarNF_is_working
     chaveNF = ""
     ano = "23"
     cnpj = "01014625000175"
@@ -113,7 +113,7 @@ class TestNFE < Minitest::Test
     nroNFIni = "23"
     nroNFFin = "23"
     justificativa = "Teste de inutilização"
-    xml, hash = @webService.exportarInutilizarNF("", ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    xml, hash = @webService.exportarDadosInutilizarNF("", ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
     refute_nil xml
     assert_equal hash[:inutNFe][:infInut][:@Id], "ID35230101462500017555001000000023000000023"
   end

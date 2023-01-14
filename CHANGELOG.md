@@ -1,6 +1,20 @@
 ## [Unreleased]
 
 - Add ConsultarGTIN service
+- Add cancelarNF service
+- Add exportarDadosCancelarNF service
+- Add enviarDadosCancelarNF service
+- Add enviarCCe service
+- Add exportarDadosCCe service
+- Add enviarDadosCCe service
+- Add consultarDistribuicaoDFe service
+- Add consultarDistribuicaoDFeChave service
+- Add enviarManifestacao service
+- Add exportarDadosManifestacao service
+- Add enviarDadosManifestacao service
+- Add enviarNF service
+- Add enviarNFSincrono service
+- Add calculaChaveNF service
 
 ## [0.6.1] - 2023-01-14
 
