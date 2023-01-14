@@ -35,6 +35,19 @@ Após instanciar, é necessário parametrizar a biblioteca:
 })
 ```
 
+- Configuração do Responsável Técnico
+
+```ruby
+@webService.setaRespTecnico({
+    cnpj: "00.000.000/0000-00",
+    contato: "EMPRESA",
+    email: "contato@empresa.com.br",
+    fone: "+551100000000",
+    idCSRT: "01",
+    CSRT: "G8063VRTNDMO886SFNK5LDUDEI24XJ22YIPO" 
+})
+```
+
 - Configuração do PFX de transmissão
 
 ```ruby
