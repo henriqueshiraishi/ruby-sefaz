@@ -4,7 +4,54 @@ module SEFAZ
   class NFE
 
     SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
-                   assinarNF validarNF auditarNF gerarDANFE inutilizarNF calculaChaveInutilizacao exportarInutilizarNF enviarInutilizarNF ]
+                   assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarDadosInutilizarNF enviarDadosInutilizarNF calculaChaveInutilizacao ]
+
+    =begin
+
+    Métodos de Configuração:
+    - setaAmbiente
+    - setaRespTecnico
+    - setaPFXTss
+    - setaPFXAss
+
+    Métodos de Consulta, Validação e Documentos: (SEM ASSINATURA)
+    - statusDoServico
+    - consultarNF
+    - consultarCadastro
+    - consultarRecibo
+    - consultarGTIN                 (PENDENTE)
+    - consultarDistribuicaoDFe      (PENDENTE)
+    - consultarDistribuicaoDFeChave (PENDENTE)
+    - validarNF
+    - auditarNF
+    - gerarDANFE
+
+    Métodos de Manipulação: (MAIORIA EXIGE ASSINATURA)
+    - assinarNF
+
+    - enviarNF          (PENDENTE)
+    - enviarNFSincrono  (PENDENTE)
+    - calculaChaveNF    (PENDENTE)
+    # Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportarDados', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
+
+    - cancelarNF  (PENDENTE)
+      - exportarDadosCancelarNF (PENDENTE)
+      - enviarDadosCancelarNF   (PENDENTE)
+    - enviarCCe   (PENDENTE)
+      - exportarDadosCCe  (PENDENTE)
+      - enviarDadosCCe    (PENDENTE)
+    - inutilizarNF
+      - exportarDadosInutilizarNF
+      - enviarDadosInutilizarNF
+      - calculaChaveInutilizacao
+    - enviarManifestacao  (PENDENTE)
+      - exportarDadosManifestacao (PENDENTE)
+      - enviarDadosManifestacao   (PENDENTE)
+    - enviarProrrogacao   (PENDENTE)
+      - exportarDadosProrrogacao  (PENDENTE)
+      - enviarDadosProrrogacao    (PENDENTE)
+
+  =end
 
     def initialize
     end
@@ -133,7 +180,7 @@ module SEFAZ
       end
     end
 
-    # Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
+    # Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarDadosInutilizarNF, assinarNF, enviarDadosInutilizarNF)
     # OBS: Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
     # @chaveNF = Identificador da TAG a ser assinada
     # @ano = Ano de inutilização da numeração
@@ -144,9 +191,9 @@ module SEFAZ
     # @nroNFFin = Número da NF-e final a ser inutilizada
     # @justificativa = Informar a justificativa do pedido de inutilização
     def inutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
-      _, hash = exportarInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+      _, hash = exportarDadosInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
       _, hash = assinarNF(hash)
-      return enviarInutilizarNF(hash)
+      return enviarDadosInutilizarNF(hash)
     end
 
     # Calcular Chave de Inutilização
@@ -174,7 +221,7 @@ module SEFAZ
     # @nroNFIni = Número da NF-e inicial a ser inutilizada
     # @nroNFFin = Número da NF-e final a ser inutilizada
     # @justificativa = Informar a justificativa do pedido de inutilização
-    def exportarInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    def exportarDadosInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
       versao  = "4.00"
       chaveNF = calculaChaveInutilizacao(ano, cnpj, modelo, serie, nroNFIni, nroNFFin) if chaveNF.blank?
       hash = { inutNFe: { :@xmlns => "http://www.portalfiscal.inf.br/nfe", :@versao => versao, infInut: {
@@ -196,7 +243,7 @@ module SEFAZ
     # Enviar Inutilização NF - Necessário um documento assinado
     # OBS: Recomendado quando utilizado o certificado A3
     # @documento(Hash ou String) = XML ou HASH assinado que será enviado
-    def enviarInutilizarNF(documento)
+    def enviarDadosInutilizarNF(documento)
       versao = "4.00"
       hash = (documento.is_a?(Hash) ? documento : SEFAZ.to_hash(documento))
       wsdl = SEFAZ::Utils::WSDL.get(:NfeInutilizacao, @ambiente, @uf)

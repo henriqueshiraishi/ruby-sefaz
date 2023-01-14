@@ -123,7 +123,7 @@ stat, msg = @webService.auditarNF(@documento)
 # => @pdf  = String com binário do arquivo PDF gerado
 stat, pdf = @webService.gerarDANFE(@documento)
 
-# Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
+# Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarDadosInutilizarNF, assinarNF, enviarDadosInutilizarNF)
 # OBS: Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
 # @chaveNF = Identificador da TAG a ser assinada
 # @ano = Ano de inutilização da numeração
@@ -155,12 +155,12 @@ chaveNF = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nr
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
 # @justificativa = Informar a justificativa do pedido de inutilização
-xml, hash = @webService.exportarInutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+xml, hash = @webService.exportarDadosInutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
 
 # Enviar Inutilização NF - Necessário um documento assinado
 # OBS: Recomendado quando utilizado o certificado A3
 # @documento(Hash ou String) = XML ou HASH assinado que será enviado
-xml, hash = @webService.enviarInutilizarNF(@documento)
+xml, hash = @webService.enviarDadosInutilizarNF(@documento)
 ```
 
 ## Desenvolvimento
