@@ -2,6 +2,10 @@
 
 - Add ConsultarGTIN service
 
+## [0.6.1] - 2023-01-14
+
+- Fix: fixing wrong signature
+
 ## [0.6.0] - 2023-01-12
 
 - Adding technical manager section

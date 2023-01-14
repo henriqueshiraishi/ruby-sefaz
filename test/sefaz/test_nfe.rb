@@ -54,7 +54,7 @@ class TestNFE < Minitest::Test
     refute_nil xml
     assert_equal hash[:NFe][:Signature][:SignedInfo][:Reference][:@URI], ("#" + hash[:NFe][:infNFe][:@Id])
     assert_equal hash[:NFe][:Signature][:SignedInfo][:Reference][:DigestValue], "651Y4oR2GTkXoHb0xyQoX142Nfw="
-    assert_equal hash[:NFe][:Signature][:SignatureValue], "HRmtAJRKuFYqrKFw72wO6WpcTwBCuzXKUOnJ0jLYtlOzU8/8YA4a0pOyFLHln5QdS9CfTucKHh11hrJXC8m+TheWodEP/+41B7uYpRB/zMo11W88rQkMFVE1g0v2YM0NQfy+u4ewwsTa905LfuEZHMxOR/KxTTJJo8kJZpGFOs0oTLCin7I7P3rU3Q8pwnzT0G7ER0PWFDaVU5tFuGIxIqhj9J+yz+LTLPrIc3RCeSXzfhi7dl3Z2+6VFBYEOHtcI97lKZzPcapVo2WCRUJrjCQPjMm0gamkjm3GhbMbUArF+XwiPk+lSDqZN0WXrRCkeOf/XVZHfpVoBkrkOl+y6A=="
+    assert_equal hash[:NFe][:Signature][:SignatureValue], "wte8XAxftEUV1rc9vsWx/sXvBoMlkeAhug2E1KoacU56lrScQ0mfiyOeXXGwCzYNzJm5Up2yE1KBfpGqjndABMuJyuhFcX6YBf0BpCc3BXyCb4VCTbBsL62gD6QlVAaIwKtTKGYH7xqQkTxUw3PLsrGqNVJitjKBomX8L+ogJZUyuiRYTdH5EC+vlO2ci2GTZLXIF8zbWjDBxQdCpe6/X9vX/R27V8Hle02T1O1bpb9+eLCs3Tai1oY+YdixRRlUt40XBWZ9063PFMO9igARE2CRxtVtV6tI9e6kwVRqO+9ES+bItmZb1dKjuO7cTHdx8PR6WPq5R3dYtvtCcD3VvQ=="
   end
 
   def test_is_the_validarNF_is_working
@@ -82,7 +82,7 @@ class TestNFE < Minitest::Test
   def test_is_the_inutilizarNF_is_working
     chaveNF = ""
     ano = "23"
-    cnpj = "01014625000175"
+    cnpj = "21684155000164"
     modelo = "55"
     serie = "1"
     nroNFIni = "23"

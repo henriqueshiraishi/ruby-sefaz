@@ -84,35 +84,11 @@ module SEFAZ
     # Assinar NF - PFX de assinatura - Certificado A1
     # @documento(Hash ou String) = XML ou HASH que será assinado
     def assinarNF(documento)
-      hash = (documento.is_a?(Hash) ? documento : SEFAZ.to_hash(documento))
-
-      uri             = "#" + (hash.dig(:NFe, :infNFe, :@Id) || hash.dig(:inutNFe, :infInut, :@Id) || hash.dig(:evento, :infEvento, :@Id)).to_s
-      digestValue     = OpenSSL::Digest::SHA1.digest(SEFAZ.to_xml(hash[hash.keys.first]))
-      signatureValue  = @pkcs12Ass.key.sign(OpenSSL::Digest::SHA1.new, SEFAZ.to_xml(hash[hash.keys.first]))
-      x509Certificate = @pkcs12Ass.certificate.to_pem.gsub(/\-\-\-\-\-[A-Z]+ CERTIFICATE\-\-\-\-\-/, "").gsub(/\n/,"")
-
-      hash[hash.keys.first][:Signature] = {
-        :@xmlns => "http://www.w3.org/2000/09/xmldsig#",
-        SignedInfo: {
-          CanonicalizationMethod: { :@Algorithm => "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" },
-          SignatureMethod: { :@Algorithm => "http://www.w3.org/2000/09/xmldsig#rsa-sha1" },
-          Reference: { :@URI => uri,
-            Transforms: {
-              Transform: { :@Algorithm => "http://www.w3.org/TR/2001/REC-xml-c14n-20010315" },
-              Transform: { :@Algorithm => "http://www.w3.org/2000/09/xmldsig#enveloped-signature" }
-            },
-            DigestMethod: { :@Algorithm => "http://www.w3.org/2000/09/xmldsig#sha1" },
-            DigestValue: Base64.strict_encode64(digestValue)
-          }
-        },
-        SignatureValue: Base64.strict_encode64(signatureValue),
-        KeyInfo: {
-          X509Data: {
-            X509Certificate: x509Certificate
-          }
-        }
-      }
-      return [SEFAZ.to_xml(hash), hash]
+      xml = (documento.is_a?(Hash) ? SEFAZ.to_xml(documento) : documento)
+      doc = SEFAZ::Utils::Assinador.new(xml)
+      doc.sign!(@pkcs12Ass.certificate, @pkcs12Ass.key)
+      xml = doc.to_xml
+      return [xml, SEFAZ.to_hash(xml)]
     end
 
     # Valida NF no SEFAZ RS NF-e (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)

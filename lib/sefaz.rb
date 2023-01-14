@@ -8,6 +8,7 @@ require 'savon'
 require_relative "sefaz/utils/version"
 require_relative "sefaz/utils/connection"
 require_relative "sefaz/utils/wsdl"
+require_relative "sefaz/utils/assinador"
 require_relative "sefaz/utils/validador"
 require_relative "sefaz/utils/auditor"
 require_relative "sefaz/utils/danfe"
