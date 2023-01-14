@@ -1,8 +1,19 @@
 ## [Unreleased]
 
-- inutilizarNF service
-- calculaChaveInutilizacao service
-- assinarNota service
+- Add ConsultarGTIN service
+
+## [0.6.0] - 2023-01-12
+
+- Adding technical manager section
+- Adding assinarNF service
+- Adding inutilizarNF service
+- Adding calculaChaveInutilizacao service
+- Adding exportarInutilizarNF service
+- Adding enviarInutilizarNF service
+- Adding validarNF service (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)
+- Adding auditarNF service (https://validador.nfe.tecnospeed.com.br/)
+- Adding gerarDANFE service (https://www.freenfe.com.br/leitor-de-xml-online)
+- Changed: README.md
 
 ## [0.5.1] - 2023-01-12
 

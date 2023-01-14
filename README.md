@@ -30,7 +30,7 @@ Após instanciar, é necessário parametrizar a biblioteca:
 
 ```ruby
 @webService.setaAmbiente({
-    ambiente: "1",  # 1=Produção; 2=Homologação
+    ambiente: "2",  # 1=Produção; 2=Homologação
     uf: "35"        # Código IBGE do Estado
 })
 ```
@@ -53,12 +53,17 @@ Após instanciar, é necessário parametrizar a biblioteca:
     senha: "senha_super_secreta"
 })
 ```
-*Observação: Caso é utilizado certificado A3 para assinatura de XML, não é necessário executar essa configuração. A biblioteca disponibiliza métodos que permite exportar o XML em HASH para realizar tratamento externo, como por exemplo, assinatura local de XML.*
+*Observação: Caso é utilizado certificado A3 para assinatura de XML, não é necessário executar essa configuração. A biblioteca disponibiliza métodos que permite exportar o XML e HASH para realizar tratamento externo, como por exemplo, assinatura local de XML com certificado A3.*
 
 ## Utilização
 
 Após a configuração, é possível acessar os seguintes serviços:
 ```ruby
+# Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico
+# Necessário quando estiver emitindo uma NF-e/NFC-e - Acionado automáticamente na emissão da NF
+# @chaveNF(String) = Chave de acesso de uma NF
+xml, hash = @webService.gerarInfRespTec(@chaveNF)
+
 # Consulta Status SEFAZ
 xml, hash = @webService.statusDoServico
 
@@ -75,6 +80,74 @@ xml, hash = @webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
 # Consulta Recebido de Lote
 # @numRecibo(String) = Número do recibo do lote de NF-e
 xml, hash = @webService.consultarRecibo(@numRecibo)
+
+# Assinar NF - PFX de assinatura - Certificado A1
+# @documento(Hash ou String) = XML ou HASH que será assinado
+xml, hash = @webService.assinarNF(@documento)
+
+# Valida NF no SEFAZ RS NF-e (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)
+# @documento(Hash ou String) = XML ou HASH que será validado
+# @openTimeout(Integer) = Tempo de espera em segundos para abrir conexão (opcional: padrão 60)
+# @readTimeout(Integer) = Tempo de espera em segundos para ler resposta (opcional: padrão 60)
+# => @stat = True/False se a validação foi executada com sucesso
+# => @msg  = Hash com todas as mensagens geradas pelo validador
+# => @err  = Hash com todas as mensagens de erros geradas pelo validador
+stat, msg, err = @webService.validarNF(@documento)
+
+# Auditar NF no validador TecnoSpeed (https://validador.nfe.tecnospeed.com.br/)
+# @documento(Hash ou String) = XML ou HASH que será auditado
+# @openTimeout(Integer) = Tempo de espera em segundos para abrir conexão (opcional: padrão 60)
+# @readTimeout(Integer) = Tempo de espera em segundos para ler resposta (opcional: padrão 60)
+# => @stat = True/False se o auditor foi executado com sucesso
+# => @msg  = Hash com todas as mensagens geradas pelo auditor
+stat, msg = @webService.auditarNF(@documento)
+
+# Gerar DANFE pelo FreeNFe (https://www.freenfe.com.br/leitor-de-xml-online)
+# @documento(Hash ou String) = XML ou HASH que será gerado
+# @openTimeout(Integer) = Tempo de espera em segundos para abrir conexão (opcional: padrão 60)
+# @readTimeout(Integer) = Tempo de espera em segundos para ler resposta (opcional: padrão 60)
+# => @stat = True/False se o gerador de DANFE foi executado com sucesso
+# => @pdf  = String com binário do arquivo PDF gerado
+stat, pdf = @webService.gerarDANFE(@documento)
+
+# Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
+# OBS: Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+# @chaveNF = Identificador da TAG a ser assinada
+# @ano = Ano de inutilização da numeração
+# @cnpj = CNPJ do emitente
+# @modelo = Modelo do documento (55 ou 65)
+# @serie = Série da NF-e
+# @nroNFIni = Número da NF-e inicial a ser inutilizada
+# @nroNFFin = Número da NF-e final a ser inutilizada
+# @justificativa = Informar a justificativa do pedido de inutilização
+xml, hash = @webService.inutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+
+# Calcular Chave de Inutilização
+# @ano = Ano de inutilização da numeração
+# @cnpj = CNPJ do emitente
+# @modelo = Modelo do documento (55 ou 65)
+# @serie = Série da NF-e
+# @nroNFIni = Número da NF-e inicial a ser inutilizada
+# @nroNFFin = Número da NF-e final a ser inutilizada
+chaveNF = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin)
+
+# Exportar Inutilização NF - Exporta um documento bruto (sem assinatura)
+# OBS: Recomendado quando utilizado o certificado A3
+#      Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+# @chaveNF = Identificador da TAG a ser assinada
+# @ano = Ano de inutilização da numeração
+# @cnpj = CNPJ do emitente
+# @modelo = Modelo do documento (55 ou 65)
+# @serie = Série da NF-e
+# @nroNFIni = Número da NF-e inicial a ser inutilizada
+# @nroNFFin = Número da NF-e final a ser inutilizada
+# @justificativa = Informar a justificativa do pedido de inutilização
+xml, hash = @webService.exportarInutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+
+# Enviar Inutilização NF - Necessário um documento assinado
+# OBS: Recomendado quando utilizado o certificado A3
+# @documento(Hash ou String) = XML ou HASH assinado que será enviado
+xml, hash = @webService.enviarInutilizarNF(@documento)
 ```
 
 ## Desenvolvimento

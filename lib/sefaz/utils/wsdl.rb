@@ -6,7 +6,7 @@ module SEFAZ
 
       # Ambiente: 1=Produção; 2=Homologação
       # Operações:
-      # - :NfeInutilizacao
+      # - :NfeInutilizacao      - OK (enviarInutilizarNF)
       # - :NfeConsultaProtocolo - OK (consultarNF)
       # - :NfeStatusServico     - OK (statusDoServico)
       # - :NfeConsultaCadastro  - OK (consultarCadastro)
