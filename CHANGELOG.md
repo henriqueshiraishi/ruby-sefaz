@@ -1,9 +1,6 @@
 ## [Unreleased]
 
 - Add ConsultarGTIN service
-- Add cancelarNF service
-- Add exportarDadosCancelarNF service
-- Add enviarDadosCancelarNF service
 - Add enviarCCe service
 - Add exportarDadosCCe service
 - Add enviarDadosCCe service
@@ -15,6 +12,16 @@
 - Add enviarNF service
 - Add enviarNFSincrono service
 - Add calculaChaveNF service
+
+## [0.7.0] - 2023-01-16
+
+- Adding enviarEvento service
+- Adding enviarLoteDeEvento service
+- Adding cancelarNF service
+- Adding exportarCancelarNF service
+- Adding gerarLeiauteEvento method
+- Adding global issuer CNPJ
+- Fix: method name 'exportarDados'/'enviarDados' to 'exportar'/'enviar'
 
 ## [0.6.2] - 2023-01-14
 

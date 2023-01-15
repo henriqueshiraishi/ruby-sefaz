@@ -30,8 +30,9 @@ Após instanciar, é necessário parametrizar a biblioteca:
 
 ```ruby
 @webService.setaAmbiente({
-    ambiente: "2",  # 1=Produção; 2=Homologação
-    uf: "35"        # Código IBGE do Estado
+    ambiente: "2",              # 1=Produção; 2=Homologação
+    uf: "35"                    # Código IBGE do Estado
+    cnpj: "00.000.000/0000-00"  # CNPJ da empresa emissora
 })
 ```
 
@@ -72,11 +73,6 @@ Após instanciar, é necessário parametrizar a biblioteca:
 
 Após a configuração, é possível acessar os seguintes serviços:
 ```ruby
-# Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico
-# Necessário quando estiver emitindo uma NF-e/NFC-e - Acionado automáticamente na emissão da NF
-# @chaveNF(String) = Chave de acesso de uma NF
-xml, hash = @webService.gerarInfRespTec(@chaveNF)
-
 # Consulta Status SEFAZ
 xml, hash = @webService.statusDoServico
 
@@ -123,17 +119,33 @@ stat, msg = @webService.auditarNF(@documento)
 # => @pdf  = String com binário do arquivo PDF gerado
 stat, pdf = @webService.gerarDANFE(@documento)
 
-# Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarDadosInutilizarNF, assinarNF, enviarDadosInutilizarNF)
-# OBS: Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
-# @chaveNF = Identificador da TAG a ser assinada
+# Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
+# OBS: Caso parâmetro @chaveInut estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+# @chaveInut = Identificador da TAG a ser assinada
 # @ano = Ano de inutilização da numeração
-# @cnpj = CNPJ do emitente
 # @modelo = Modelo do documento (55 ou 65)
 # @serie = Série da NF-e
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
 # @justificativa = Informar a justificativa do pedido de inutilização
-xml, hash = @webService.inutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+xml, hash = @webService.inutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+
+# Exportar Inutilização NF - Exporta um documento bruto (sem assinatura)
+# OBS: Recomendado quando utilizado o certificado A3
+#      Caso parâmetro @chaveInut estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+# @chaveInut = Identificador da TAG a ser assinada
+# @ano = Ano de inutilização da numeração
+# @modelo = Modelo do documento (55 ou 65)
+# @serie = Série da NF-e
+# @nroNFIni = Número da NF-e inicial a ser inutilizada
+# @nroNFFin = Número da NF-e final a ser inutilizada
+# @justificativa = Informar a justificativa do pedido de inutilização
+xml, hash = @webService.exportarInutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+
+# Enviar Inutilização NF - Necessário um documento assinado
+# OBS: Recomendado quando utilizado o certificado A3
+# @documento(Hash ou String) = XML ou HASH assinado que será enviado
+xml, hash = @webService.enviarInutilizarNF(@documento)
 
 # Calcular Chave de Inutilização
 # @ano = Ano de inutilização da numeração
@@ -142,25 +154,48 @@ xml, hash = @webService.inutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nr
 # @serie = Série da NF-e
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
-chaveNF = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin)
+chaveInut = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin)
 
-# Exportar Inutilização NF - Exporta um documento bruto (sem assinatura)
-# OBS: Recomendado quando utilizado o certificado A3
-#      Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
-# @chaveNF = Identificador da TAG a ser assinada
-# @ano = Ano de inutilização da numeração
-# @cnpj = CNPJ do emitente
-# @modelo = Modelo do documento (55 ou 65)
-# @serie = Série da NF-e
-# @nroNFIni = Número da NF-e inicial a ser inutilizada
-# @nroNFFin = Número da NF-e final a ser inutilizada
-# @justificativa = Informar a justificativa do pedido de inutilização
-xml, hash = @webService.exportarDadosInutilizarNF(@chaveNF, @ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+# Cancelar NF - Gera, assina e envia o documento com certificado A1 (exportarCancelarNF, assinarNF, enviarEvento)
+# @chaveNF = Chave de acesso de uma NF
+# @sequenciaEvento = O número do evento
+# @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+# @numProtocolo = Número do Protocolo de registro da NF
+# @justificativa = Motivo do cancelamento da NF
+# @idLote = Número de controle interno
+xml, hash = @webService.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa, @idLote)
 
-# Enviar Inutilização NF - Necessário um documento assinado
+# Exportar Cancelar NF - Exporta um documento bruto (sem assinatura)
 # OBS: Recomendado quando utilizado o certificado A3
-# @documento(Hash ou String) = XML ou HASH assinado que será enviado
-xml, hash = @webService.enviarDadosInutilizarNF(@documento)
+# @chaveNF = Chave de acesso de uma NF
+# @sequenciaEvento = O número do evento
+# @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+# @numProtocolo = Número do Protocolo de registro da NF
+# @justificativa = Motivo do cancelamento da NF
+# @idLote = Número de controle interno
+xml, hash = @webService.exportarCancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa)
+
+# Enviar Evento - Necessário um documento assinado
+# OBS: Recomendado quando utilizado o certificado A3
+# @evento(Hash ou String) = XML ou HASH assinado que será enviado
+# @idLote(String) = Identificador de controle do Lote de envio do Evento
+xml, hash = @webService.enviarEvento(@evento, @idLote)
+
+# Envia Lote de Eventos - Necessário que cada evento esteja assinado
+# OBS: Recomendado quando utilizado o certificado A3 e/ou para envio em lote de eventos
+#      Cada elemento do Array pode ser Hash ou XML assinados
+# @lote(Array) = Array de eventos assinados
+# @idLote(String) = Identificador de controle do Lote de envio do Evento
+# Exemplo de @lote:
+# @eve1_xml, @eve1_hash = @webService.exportarCancelarNF(...)
+# @eve2_xml, @eve2_hash = @webService.exportarCancelarNF(...)
+# @lote = [ @eve1_xml, @eve2_hash ]
+xml, hash = @webService.enviarLoteDeEvento(@lote, @idLote)
+
+# Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico
+# Necessário quando estiver emitindo uma NF-e/NFC-e - Acionado automáticamente na emissão da NF
+# @chaveNF(String) = Chave de acesso de uma NF
+xml, hash = @webService.gerarInfRespTec(@chaveNF)
 ```
 
 ## Desenvolvimento

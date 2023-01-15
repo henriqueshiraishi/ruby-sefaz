@@ -6,11 +6,11 @@ module SEFAZ
 
       # Ambiente: 1=Produção; 2=Homologação
       # Operações:
-      # - :NfeInutilizacao      - OK (enviarDadosInutilizarNF)
+      # - :NfeInutilizacao      - OK (enviarInutilizarNF)
       # - :NfeConsultaProtocolo - OK (consultarNF)
       # - :NfeStatusServico     - OK (statusDoServico)
       # - :NfeConsultaCadastro  - OK (consultarCadastro)
-      # - :RecepcaoEvento
+      # - :RecepcaoEvento       - OK (enviarLoteDeEvento)
       # - :NFeAutorizacao
       # - :NFeRetAutorizacao    - OK (consultarRecibo)
       # UF: código IBGE do Estado

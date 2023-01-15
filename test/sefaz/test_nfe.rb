@@ -6,7 +6,7 @@ class TestNFE < Minitest::Test
 
   def setup
     @webService = SEFAZ::NFE.new
-    @webService.setaAmbiente({ ambiente: "2", uf: "35" })
+    @webService.setaAmbiente({ ambiente: "2", uf: "35", cnpj: "21684155000164" })
     @webService.setaRespTecnico({ cnpj: "00.000.000/0000-00", contato: "EMPRESA", email: "contato@empresa.com.br", fone: "+551100000000", idCSRT: "01", CSRT: "G8063VRTNDMO886SFNK5LDUDEI24XJ22YIPO" })
     @webService.setaPFXTss({ pfx: File.read("certificate.pfx"), senha: "1234" })
     @webService.setaPFXAss({ pfx: File.read("certificate.pfx"), senha: "1234" })
@@ -80,15 +80,14 @@ class TestNFE < Minitest::Test
   end
 
   def test_is_the_inutilizarNF_is_working
-    chaveNF = ""
+    chaveInut = ""
     ano = "23"
-    cnpj = "21684155000164"
     modelo = "55"
     serie = "1"
     nroNFIni = "23"
     nroNFFin = "23"
     justificativa = "Teste de inutilização"
-    xml, hash = @webService.inutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    xml, hash = @webService.inutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
     refute_nil xml
     assert_equal hash[:nfeResultMsg][:retInutNFe][:infInut][:cStat], "563"
   end
@@ -100,22 +99,45 @@ class TestNFE < Minitest::Test
     serie = "1"
     nroNFIni = "23"
     nroNFFin = "23"
-    chaveNF = @webService.calculaChaveInutilizacao(ano, cnpj, modelo, serie, nroNFIni, nroNFFin)
-    assert_equal chaveNF, "ID35230101462500017555001000000023000000023"
+    chaveInut = @webService.calculaChaveInutilizacao(ano, cnpj, modelo, serie, nroNFIni, nroNFFin)
+    assert_equal chaveInut, "ID35230101462500017555001000000023000000023"
   end
 
-  def test_if_the_exportarDadosInutilizarNF_is_working
-    chaveNF = ""
+  def test_if_the_exportarInutilizarNF_is_working
+    chaveInut = ""
     ano = "23"
-    cnpj = "01014625000175"
     modelo = "55"
     serie = "1"
     nroNFIni = "23"
     nroNFFin = "23"
     justificativa = "Teste de inutilização"
-    xml, hash = @webService.exportarDadosInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    xml, hash = @webService.exportarInutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
     refute_nil xml
-    assert_equal hash[:inutNFe][:infInut][:@Id], "ID35230101462500017555001000000023000000023"
+    assert_equal hash[:inutNFe][:infInut][:@Id], "ID35232168415500016455001000000023000000023"
+  end
+
+  def test_if_the_cancelarNF_is_working
+    chaveNF = "35221221684155000164550010000002361125429343"
+    sequenciaEvento = "1"
+    dataHoraEvento = "2023-01-15T17:07:00+03:00"
+    numProtocolo = "135220011515372"
+    justificativa = "Teste de cancelamento..."
+    idLote = "1"
+    xml, hash = @webService.cancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa, idLote)
+    refute_nil xml
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:cStat], "128"
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "573"
+  end
+
+  def test_if_the_exportarCancelarNF_is_working
+    chaveNF = "35221221684155000164550010000002361125429343"
+    sequenciaEvento = "1"
+    dataHoraEvento = "2023-01-15T17:07:00+03:00"
+    numProtocolo = "135220011515372"
+    justificativa = "Teste de cancelamento..."
+    xml, hash = @webService.exportarCancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa)
+    refute_nil xml
+    assert_equal hash[:evento][:infEvento][:@Id], "ID1101113522122168415500016455001000000236112542934301"
   end
 
 end

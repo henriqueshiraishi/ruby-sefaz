@@ -4,7 +4,8 @@ module SEFAZ
   class NFE
 
     SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
-                   assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarDadosInutilizarNF enviarDadosInutilizarNF calculaChaveInutilizacao ]
+                   assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarInutilizarNF enviarInutilizarNF calculaChaveInutilizacao
+                   enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF ]
 
     # Métodos de Configuração:
     # - setaAmbiente
@@ -25,27 +26,24 @@ module SEFAZ
     # - gerarDANFE
 
     # Métodos de Manipulação: (MAIORIA EXIGE ASSINATURA)
-    # -- Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportarDados', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
+    # -- Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportar', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
     # - assinarNF
     # - enviarNF                    (PENDENTE)
     # - enviarNFSincrono            (PENDENTE)
-    # - calculaChaveNF              (PENDENTE) 
-    # - cancelarNF                  (PENDENTE)
-    #   - exportarDadosCancelarNF   (PENDENTE)
-    #   - enviarDadosCancelarNF     (PENDENTE)
-    # - enviarCCe                   (PENDENTE)
-    #   - exportarDadosCCe          (PENDENTE)
-    #   - enviarDadosCCe            (PENDENTE)
+    # - calculaChaveNF              (PENDENTE)
     # - inutilizarNF
-    #   - exportarDadosInutilizarNF
-    #   - enviarDadosInutilizarNF
-    #   - calculaChaveInutilizacao
-    # - enviarManifestacao          (PENDENTE)
-    #   - exportarDadosManifestacao (PENDENTE)
-    #   - enviarDadosManifestacao   (PENDENTE)
-    # - enviarProrrogacao           (PENDENTE)
-    #   - exportarDadosProrrogacao  (PENDENTE)
-    #   - enviarDadosProrrogacao    (PENDENTE)
+    #   - exportarInutilizarNF
+    #   - enviarInutilizarNF
+    #   - calculaChaveInutilizacao 
+    # - cancelarNF                  (EVENTO)
+    #   - exportarCancelarNF        (EVENTO)
+    # - enviarCCe                   (PENDENTE) (EVENTO)
+    #   - exportarCCe               (PENDENTE) (EVENTO)
+    # - enviarManifestacao          (PENDENTE) (EVENTO)
+    #   - exportarManifestacao      (PENDENTE) (EVENTO)
+    # - enviarEvento
+    # - enviarLoteDeEvento
+    # - gerarLeiauteEvento          (PRIVADO)
 
     def initialize
     end
@@ -53,6 +51,7 @@ module SEFAZ
     def setaAmbiente(params = {})
       @uf = params[:uf]
       @ambiente = params[:ambiente]
+      @cnpj = params[:cnpj].to_s.delete("^0-9")
     end
 
     def setaRespTecnico(params = {})
@@ -174,20 +173,19 @@ module SEFAZ
       end
     end
 
-    # Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarDadosInutilizarNF, assinarNF, enviarDadosInutilizarNF)
-    # OBS: Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
-    # @chaveNF = Identificador da TAG a ser assinada
+    # Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
+    # OBS: Caso parâmetro @chaveInut estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+    # @chaveInut = Identificador da TAG a ser assinada
     # @ano = Ano de inutilização da numeração
-    # @cnpj = CNPJ do emitente
     # @modelo = Modelo do documento (55 ou 65)
     # @serie = Série da NF-e
     # @nroNFIni = Número da NF-e inicial a ser inutilizada
     # @nroNFFin = Número da NF-e final a ser inutilizada
     # @justificativa = Informar a justificativa do pedido de inutilização
-    def inutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
-      _, hash = exportarDadosInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    def inutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
+      _, hash = exportarInutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
       _, hash = assinarNF(hash)
-      return enviarDadosInutilizarNF(hash)
+      return enviarInutilizarNF(hash)
     end
 
     # Calcular Chave de Inutilização
@@ -206,25 +204,24 @@ module SEFAZ
 
     # Exportar Inutilização NF - Exporta um documento bruto (sem assinatura)
     # OBS: Recomendado quando utilizado o certificado A3
-    #      Caso parâmetro @chaveNF estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
-    # @chaveNF = Identificador da TAG a ser assinada
+    #      Caso parâmetro @chaveInut estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
+    # @chaveInut = Identificador da TAG a ser assinada
     # @ano = Ano de inutilização da numeração
-    # @cnpj = CNPJ do emitente
     # @modelo = Modelo do documento (55 ou 65)
     # @serie = Série da NF-e
     # @nroNFIni = Número da NF-e inicial a ser inutilizada
     # @nroNFFin = Número da NF-e final a ser inutilizada
     # @justificativa = Informar a justificativa do pedido de inutilização
-    def exportarDadosInutilizarNF(chaveNF, ano, cnpj, modelo, serie, nroNFIni, nroNFFin, justificativa)
+    def exportarInutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
       versao  = "4.00"
-      chaveNF = calculaChaveInutilizacao(ano, cnpj, modelo, serie, nroNFIni, nroNFFin) if chaveNF.blank?
+      chaveInut = calculaChaveInutilizacao(ano, @cnpj, modelo, serie, nroNFIni, nroNFFin) if chaveInut.blank?
       hash = { inutNFe: { :@xmlns => "http://www.portalfiscal.inf.br/nfe", :@versao => versao, infInut: {
-        :@Id => chaveNF,
+        :@Id => chaveInut,
         tpAmb:  @ambiente,
         xServ:  'INUTILIZAR',
         cUF:    @uf,
         ano:    ano,
-        CNPJ:   cnpj,
+        CNPJ:   @cnpj,
         mod:    modelo,
         serie:  serie,
         nNFIni: nroNFIni,
@@ -237,12 +234,77 @@ module SEFAZ
     # Enviar Inutilização NF - Necessário um documento assinado
     # OBS: Recomendado quando utilizado o certificado A3
     # @documento(Hash ou String) = XML ou HASH assinado que será enviado
-    def enviarDadosInutilizarNF(documento)
+    def enviarInutilizarNF(documento)
       versao = "4.00"
       hash = (documento.is_a?(Hash) ? documento : SEFAZ.to_hash(documento))
       wsdl = SEFAZ::Utils::WSDL.get(:NfeInutilizacao, @ambiente, @uf)
       conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, wsdl, versao, @uf)
       resp = conn.call(:nfe_inutilizacao_nf, hash)
+      return [SEFAZ.to_xml(resp.body), resp.body]
+    end
+
+    # Cancelar NF - Gera, assina e envia o documento com certificado A1 (exportarCancelarNF, assinarNF, enviarEvento)
+    # @chaveNF = Chave de acesso de uma NF
+    # @sequenciaEvento = O número do evento
+    # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+    # @numProtocolo = Número do Protocolo de registro da NF
+    # @justificativa = Motivo do cancelamento da NF
+    # @idLote = Número de controle interno
+    def cancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa, idLote)
+      _, hash = exportarCancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa)
+      _, hash = assinarNF(hash)
+      return enviarEvento(hash, idLote)
+    end
+
+    # Exportar Cancelar NF - Exporta um documento bruto (sem assinatura)
+    # OBS: Recomendado quando utilizado o certificado A3
+    # @chaveNF = Chave de acesso de uma NF
+    # @sequenciaEvento = O número do evento
+    # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+    # @numProtocolo = Número do Protocolo de registro da NF
+    # @justificativa = Motivo do cancelamento da NF
+    # @idLote = Número de controle interno
+    def exportarCancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa)
+      versao = "1.00"
+      tpEvento = "110111"
+      _, hash  = gerarLeiauteEvento(versao, tpEvento, chaveNF, sequenciaEvento, dataHoraEvento)
+      hash[:evento][:infEvento][:detEvento] = { :@versao => versao,
+        descEvento: "Cancelamento",
+        nProt: numProtocolo,
+        xJust: justificativa
+      }
+      return [SEFAZ.to_xml(hash), hash]
+    end
+
+    # Enviar Evento - Necessário um documento assinado
+    # OBS: Recomendado quando utilizado o certificado A3
+    # @evento(Hash ou String) = XML ou HASH assinado que será enviado
+    # @idLote(String) = Identificador de controle do Lote de envio do Evento
+    def enviarEvento(evento, idLote)
+      return enviarLoteDeEvento([ evento ], idLote)
+    end
+
+    # Envia Lote de Eventos - Necessário que cada evento esteja assinado
+    # OBS: Recomendado quando utilizado o certificado A3 e/ou para envio em lote de eventos
+    #      Cada elemento do Array pode ser Hash ou XML assinados
+    # @lote(Array) = Array de eventos assinados
+    # @idLote(String) = Identificador de controle do Lote de envio do Evento
+    # Exemplo de @lote:
+    # @eve1_xml, @eve1_hash = @webService.exportarCancelarNF(...)
+    # @eve2_xml, @eve2_hash = @webService.exportarCancelarNF(...)
+    # @lote = [ @eve1_xml, @eve2_hash ]
+    def enviarLoteDeEvento(lote, idLote)
+      versao = "1.00"
+      lote = (lote.map { |el| el.is_a?(Hash) ? el[:evento] : SEFAZ.to_hash(el)[:evento] })
+      hash = {
+        envEvento: { :@xmlns => "http://www.portalfiscal.inf.br/nfe", :@versao => versao,
+          idLote: idLote,
+          evento: lote
+        }
+      }
+      wsdl = SEFAZ::Utils::WSDL.get(:RecepcaoEvento, @ambiente, @uf)
+      conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, wsdl, versao, @uf)
+      resp = conn.call(:nfe_recepcao_evento, hash)
       return [SEFAZ.to_xml(resp.body), resp.body]
     end
 
@@ -256,6 +318,30 @@ module SEFAZ
       hash = { infRespTec: { CNPJ: @cnpjTec, xContato: @contatoTec, email: @emailTec, fone: @foneTec, idCSRT: @idCSRT, hashCSRT: hashCSRT } }
       return [SEFAZ.to_xml(hash), hash]
     end
+
+    private
+
+      # Gera o Leiaute Mensagem de Entrada (Parte Geral) dos Eventos
+      # Utilizado internamente nos métodos: exportarCancelarNF, exportarCCe, exportarManifestacao, ... (métodos de eventos)
+      def gerarLeiauteEvento(verEvento, tpEvento, chaveNF, sequenciaEvento, dataHoraEvento)
+        versao = "1.00"
+        id = "ID" + tpEvento.to_s + chaveNF.to_s + sequenciaEvento.to_s.rjust(2, "0")
+        hash = {
+          evento: { :@xmlns => "http://www.portalfiscal.inf.br/nfe", :@versao => versao,
+            infEvento: { :@Id => id,
+              cOrgao: @uf,
+              tpAmb: @ambiente,
+              CNPJ: @cnpj,
+              chNFe: chaveNF,
+              dhEvento: dataHoraEvento,
+              tpEvento: tpEvento,
+              nSeqEvento: sequenciaEvento,
+              verEvento: verEvento
+            }
+          }
+        }
+        return [SEFAZ.to_xml(hash), hash]
+      end
 
   end
 end
