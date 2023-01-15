@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Biblioteca de serviços e transmissão da SEFAZ"
   spec.homepage    = "https://github.com/henriqueshiraishi/ruby-sefaz"
   spec.license     = "MIT"
-  spec.required_ruby_version = ">= 2.6.0"
+  spec.required_ruby_version = ">= 2.5.1"
 
   spec.metadata["homepage_uri"]    = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/henriqueshiraishi/ruby-sefaz"

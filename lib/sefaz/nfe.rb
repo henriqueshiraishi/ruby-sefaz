@@ -6,52 +6,46 @@ module SEFAZ
     SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
                    assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarDadosInutilizarNF enviarDadosInutilizarNF calculaChaveInutilizacao ]
 
-    =begin
+    # Métodos de Configuração:
+    # - setaAmbiente
+    # - setaRespTecnico
+    # - setaPFXTss
+    # - setaPFXAss
 
-    Métodos de Configuração:
-    - setaAmbiente
-    - setaRespTecnico
-    - setaPFXTss
-    - setaPFXAss
+    # Métodos de Consulta, Validação e Documentos: (SEM ASSINATURA)
+    # - statusDoServico
+    # - consultarNF
+    # - consultarCadastro
+    # - consultarRecibo
+    # - consultarGTIN                 (PENDENTE)
+    # - consultarDistribuicaoDFe      (PENDENTE)
+    # - consultarDistribuicaoDFeChave (PENDENTE)
+    # - validarNF
+    # - auditarNF
+    # - gerarDANFE
 
-    Métodos de Consulta, Validação e Documentos: (SEM ASSINATURA)
-    - statusDoServico
-    - consultarNF
-    - consultarCadastro
-    - consultarRecibo
-    - consultarGTIN                 (PENDENTE)
-    - consultarDistribuicaoDFe      (PENDENTE)
-    - consultarDistribuicaoDFeChave (PENDENTE)
-    - validarNF
-    - auditarNF
-    - gerarDANFE
-
-    Métodos de Manipulação: (MAIORIA EXIGE ASSINATURA)
-    - assinarNF
-
-    - enviarNF          (PENDENTE)
-    - enviarNFSincrono  (PENDENTE)
-    - calculaChaveNF    (PENDENTE)
-    # Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportarDados', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
-
-    - cancelarNF  (PENDENTE)
-      - exportarDadosCancelarNF (PENDENTE)
-      - enviarDadosCancelarNF   (PENDENTE)
-    - enviarCCe   (PENDENTE)
-      - exportarDadosCCe  (PENDENTE)
-      - enviarDadosCCe    (PENDENTE)
-    - inutilizarNF
-      - exportarDadosInutilizarNF
-      - enviarDadosInutilizarNF
-      - calculaChaveInutilizacao
-    - enviarManifestacao  (PENDENTE)
-      - exportarDadosManifestacao (PENDENTE)
-      - enviarDadosManifestacao   (PENDENTE)
-    - enviarProrrogacao   (PENDENTE)
-      - exportarDadosProrrogacao  (PENDENTE)
-      - enviarDadosProrrogacao    (PENDENTE)
-
-  =end
+    # Métodos de Manipulação: (MAIORIA EXIGE ASSINATURA)
+    # -- Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportarDados', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
+    # - assinarNF
+    # - enviarNF                    (PENDENTE)
+    # - enviarNFSincrono            (PENDENTE)
+    # - calculaChaveNF              (PENDENTE) 
+    # - cancelarNF                  (PENDENTE)
+    #   - exportarDadosCancelarNF   (PENDENTE)
+    #   - enviarDadosCancelarNF     (PENDENTE)
+    # - enviarCCe                   (PENDENTE)
+    #   - exportarDadosCCe          (PENDENTE)
+    #   - enviarDadosCCe            (PENDENTE)
+    # - inutilizarNF
+    #   - exportarDadosInutilizarNF
+    #   - enviarDadosInutilizarNF
+    #   - calculaChaveInutilizacao
+    # - enviarManifestacao          (PENDENTE)
+    #   - exportarDadosManifestacao (PENDENTE)
+    #   - enviarDadosManifestacao   (PENDENTE)
+    # - enviarProrrogacao           (PENDENTE)
+    #   - exportarDadosProrrogacao  (PENDENTE)
+    #   - enviarDadosProrrogacao    (PENDENTE)
 
     def initialize
     end

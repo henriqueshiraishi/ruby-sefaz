@@ -16,6 +16,12 @@
 - Add enviarNFSincrono service
 - Add calculaChaveNF service
 
+## [0.6.2] - 2023-01-14
+
+- Fix: turn off warnings when run test
+- Fix: wrong comments
+- Changed: require ruby version 2.6.0 to 2.5.1 (downgrade)
+
 ## [0.6.1] - 2023-01-14
 
 - Fix: fixing wrong signature
