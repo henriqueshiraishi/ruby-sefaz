@@ -140,4 +140,26 @@ class TestNFE < Minitest::Test
     assert_equal hash[:evento][:infEvento][:@Id], "ID1101113522122168415500016455001000000236112542934301"
   end
 
+  def test_if_the_enviarCCe_is_working
+    chaveNF = "35221221684155000164550010000002361125429343"
+    sequenciaEvento = "1"
+    dataHoraEvento = "2023-01-15T17:07:00+03:00"
+    textoCorrecao = "Teste de carta de correção..."
+    idLote = "1"
+    xml, hash = @webService.enviarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao, idLote)
+    refute_nil xml
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:cStat], "128"
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "573"
+  end
+
+  def test_if_the_exportarCCe_is_working
+    chaveNF = "35221221684155000164550010000002361125429343"
+    sequenciaEvento = "1"
+    dataHoraEvento = "2023-01-15T17:07:00+03:00"
+    textoCorrecao = "Teste de carta de correção..."
+    xml, hash = @webService.exportarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao)
+    refute_nil xml
+    assert_equal hash[:evento][:infEvento][:@Id], "ID1101103522122168415500016455001000000236112542934301"
+  end
+
 end

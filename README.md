@@ -196,6 +196,22 @@ xml, hash = @webService.enviarLoteDeEvento(@lote, @idLote)
 # Necessário quando estiver emitindo uma NF-e/NFC-e - Acionado automáticamente na emissão da NF
 # @chaveNF(String) = Chave de acesso de uma NF
 xml, hash = @webService.gerarInfRespTec(@chaveNF)
+
+# Enviar CCe - Gera, assina e envia o documento com certificado A1 (exportarCCe, assinarNF, enviarEvento)
+# @chaveNF = Chave de acesso de uma NF
+# @sequenciaEvento = O número do evento
+# @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+# @textoCorrecao = Motivo do cancelamento da NF
+# @idLote = Número de controle interno
+xml, hash = @webService.enviarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao, @idLote)
+
+# Exportar CCe - Exporta um documento bruto (sem assinatura)
+# OBS: Recomendado quando utilizado o certificado A3
+# @chaveNF = Chave de acesso de uma NF
+# @sequenciaEvento = O número do evento
+# @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+# @textoCorrecao = Motivo do cancelamento da NF
+xml, hash = @webService.exportarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao)
 ```
 
 ## Desenvolvimento

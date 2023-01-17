@@ -5,7 +5,7 @@ module SEFAZ
 
     SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
                    assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarInutilizarNF enviarInutilizarNF calculaChaveInutilizacao
-                   enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF ]
+                   enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF enviarCCe exportarCCe ]
 
     # Métodos de Configuração:
     # - setaAmbiente
@@ -37,8 +37,8 @@ module SEFAZ
     #   - calculaChaveInutilizacao 
     # - cancelarNF                  (EVENTO)
     #   - exportarCancelarNF        (EVENTO)
-    # - enviarCCe                   (PENDENTE) (EVENTO)
-    #   - exportarCCe               (PENDENTE) (EVENTO)
+    # - enviarCCe                   (EVENTO)
+    #   - exportarCCe               (EVENTO)
     # - enviarManifestacao          (PENDENTE) (EVENTO)
     #   - exportarManifestacao      (PENDENTE) (EVENTO)
     # - enviarEvento
@@ -272,6 +272,36 @@ module SEFAZ
         descEvento: "Cancelamento",
         nProt: numProtocolo,
         xJust: justificativa
+      }
+      return [SEFAZ.to_xml(hash), hash]
+    end
+
+    # Enviar CCe - Gera, assina e envia o documento com certificado A1 (exportarCCe, assinarNF, enviarEvento)
+    # @chaveNF = Chave de acesso de uma NF
+    # @sequenciaEvento = O número do evento
+    # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+    # @textoCorrecao = Motivo do cancelamento da NF
+    # @idLote = Número de controle interno
+    def enviarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao, idLote)
+      _, hash = exportarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao)
+      _, hash = assinarNF(hash)
+      return enviarEvento(hash, idLote)
+    end
+
+    # Exportar CCe - Exporta um documento bruto (sem assinatura)
+    # OBS: Recomendado quando utilizado o certificado A3
+    # @chaveNF = Chave de acesso de uma NF
+    # @sequenciaEvento = O número do evento
+    # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
+    # @textoCorrecao = Motivo do cancelamento da NF
+    def exportarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao)
+      versao = "1.00"
+      tpEvento = "110110"
+      _, hash  = gerarLeiauteEvento(versao, tpEvento, chaveNF, sequenciaEvento, dataHoraEvento)
+      hash[:evento][:infEvento][:detEvento] = { :@versao => versao,
+        descEvento: "Carta de Correcao",
+        xCorrecao: textoCorrecao,
+        xCondUso: "A Carta de Correcao e disciplinada pelo paragrafo 1o-A do art. 7o do Convenio S/N, de 15 de dezembro de 1970 e pode ser utilizada para regularizacao de erro ocorrido na emissao de documento fiscal, desde que o erro nao esteja relacionado com: I - as variaveis que determinam o valor do imposto tais como: base de calculo, aliquota, diferenca de preco, quantidade, valor da operacao ou da prestacao; II - a correcao de dados cadastrais que implique mudanca do remetente ou do destinatario; III - a data de emissao ou de saida."
       }
       return [SEFAZ.to_xml(hash), hash]
     end
