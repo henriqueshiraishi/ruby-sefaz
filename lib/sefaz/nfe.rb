@@ -5,7 +5,7 @@ module SEFAZ
 
     SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
                    assinarNF validarNF auditarNF gerarDANFE inutilizarNF exportarInutilizarNF enviarInutilizarNF calculaChaveInutilizacao
-                   enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF enviarCCe exportarCCe ]
+                   enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF enviarCCe exportarCCe enviarNF enviarLoteNF calculaChaveNF]
 
     # Métodos de Configuração:
     # - setaAmbiente
@@ -26,11 +26,11 @@ module SEFAZ
     # - gerarDANFE
 
     # Métodos de Manipulação: (MAIORIA EXIGE ASSINATURA)
-    # -- Os métodos 'enviarNF' e 'enviarNFSincrono' não precisa 'exportar', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
+    # -- Os métodos 'enviarNF' e 'enviarLoteNF' não precisa 'exportar', pois os dados são montados externo à gema (XML ou Hash ou DataSet)
     # - assinarNF
-    # - enviarNF                    (PENDENTE)
-    # - enviarNFSincrono            (PENDENTE)
-    # - calculaChaveNF              (PENDENTE)
+    # - enviarNF
+    # - enviarLoteNF
+    # - calculaChaveNF
     # - inutilizarNF
     #   - exportarInutilizarNF
     #   - enviarInutilizarNF
@@ -129,6 +129,62 @@ module SEFAZ
       doc.sign!(@pkcs12Ass.certificate, @pkcs12Ass.key)
       xml = doc.to_xml
       return [xml, SEFAZ.to_hash(xml)]
+    end
+
+    # Enviar NF - Necessário uma NF assinada
+    # @documento(Hash ou String) = XML ou HASH assinado que será enviado
+    # @indSinc(String) = "0"=Assíncrono / "1"=Síncrono
+    # @idLote(String) = Identificador de controle do Lote de envio do Lote
+    def enviarNF(documento, indSinc, idLote)
+      return enviarLoteNF([ documento ], indSinc, idLote)
+    end
+
+    # Envia Lote de NF - Necessário que cada NF esteja assinada
+    # OBS: Recomendado para envio em lote de NF, cada elemento do Array pode ser Hash ou XML assinados
+    # @lote(Array) = Array de NF assinadas
+    # @indSinc(String) = "0"=Assíncrono / "1"=Síncrono
+    # @idLote(String) = Identificador de controle do Lote de envio do Lote
+    # Exemplo de @lote:
+    # @nf1_xml, @nf1_hash = @webService.assinarNF(...)
+    # @nf2_xml, @nf2_hash = @webService.assinarNF(...)
+    # @lote = [ @nf1_xml, @nf2_hash ]
+    def enviarLoteNF(lote, indSinc, idLote)
+      versao = "4.00"
+      lote = (lote.map { |el| el.is_a?(Hash) ? el[:NFe] : SEFAZ.to_hash(el)[:NFe] })
+      hash = {
+        enviNFe: { :@xmlns => "http://www.portalfiscal.inf.br/nfe", :@versao => versao,
+          idLote: idLote,
+          indSinc: indSinc,
+          NFe: lote
+        }
+      }
+      wsdl = SEFAZ::Utils::WSDL.get(:NFeAutorizacao, @ambiente, @uf)
+      conn = SEFAZ::Utils::Connection.new(@pkcs12Tss, wsdl, versao, @uf)
+      resp = conn.call(:nfe_autorizacao_lote, hash)
+      return [SEFAZ.to_xml(resp.body), resp.body]
+    end
+
+    # Calcular Chave NF
+    # @uf = Código da UF do emitente do Documento Fiscal
+    # @aamm = Ano e Mês de emissão da NF-e
+    # @cnpj = CNPJ do emitente
+    # @modelo = Modelo do Documento Fiscal (55 ou 65)
+    # @serie = Série do Documento Fiscal
+    # @nNF = Número do Documento Fiscal
+    # @tpEmis = Forma de emissão da NF-e
+    # @cNF = Código Numérico que compõe a Chave de Acesso (ID do sistema)
+    def calculaChaveNF(uf, aamm, cnpj, modelo, serie, nNF, tpEmis, cNF)
+      uf = uf.to_s.rjust(2, "0")
+      aamm = aamm.to_s.rjust(4, "0")
+      cnpj = cnpj.to_s.delete("^0-9").rjust(14, "0")
+      modelo = modelo.to_s.rjust(2, "0")
+      serie = serie.to_s.rjust(3, "0")
+      nNF = nNF.to_s.rjust(9, "0")
+      cNF = cNF.to_s.rjust(8, "0")
+      nChave = "#{uf[0,2]}#{aamm[0,4]}#{cnpj[0,14]}#{modelo[0,2]}#{serie[0,3]}#{nNF[0,9]}#{tpEmis[0,1]}#{cNF[0,8]}"
+      nPesos = "4329876543298765432987654329876543298765432"
+      cDV = 11 - (nChave.split("").each_with_index.map { |n, index| n.to_i * nPesos[index].to_i }.sum % 11)
+      return ["#{nChave}#{cDV}", cDV]
     end
 
     # Valida NF no SEFAZ RS NF-e (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)
@@ -339,13 +395,16 @@ module SEFAZ
     end
 
     # Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico
-    # Necessário quando estiver emitindo uma NF-e/NFC-e - Acionado automáticamente na emissão da NF
-    # @chaveNF(String) = Chave de acesso de uma NF
-    def gerarInfRespTec(chaveNF)
+    # Necessário quando estiver emitindo uma NF-e/NFC-e
+    # @documento(Hash ou String) = XML ou HASH que será tratado
+    def gerarInfRespTec(documento)
+      hash = (documento.is_a?(Hash) ? documento : SEFAZ.to_hash(documento))
+      chaveNF = hash[:NFe][:infNFe][:@Id].to_s.delete("^0-9")
       concat = @CSRT.to_s + chaveNF.to_s
       hexdigest = Digest::SHA1.hexdigest(concat)
       hashCSRT  = Base64.strict_encode64(hexdigest)
-      hash = { infRespTec: { CNPJ: @cnpjTec, xContato: @contatoTec, email: @emailTec, fone: @foneTec, idCSRT: @idCSRT, hashCSRT: hashCSRT } }
+      _, infRespTec = SEFAZ.remove_blank({ infRespTec: { CNPJ: @cnpjTec, xContato: @contatoTec, email: @emailTec, fone: @foneTec, idCSRT: @idCSRT, hashCSRT: hashCSRT } })
+      hash[:NFe][:infNFe][:infRespTec] = infRespTec[:infRespTec]
       return [SEFAZ.to_xml(hash), hash]
     end
 

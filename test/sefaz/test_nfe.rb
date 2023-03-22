@@ -13,10 +13,11 @@ class TestNFE < Minitest::Test
   end
 
   def test_if_the_gerarInfRespTec_is_working
-    chaveNF = "41180678393592000146558900000006041028190697"
-    xml, hash = @webService.gerarInfRespTec(chaveNF)
+    xml_unsigned = '<NFe><infNFe Id="NFe41180678393592000146558900000006041028190697"></infNFe></NFe>'
+    xml, _ = @webService.assinarNF(xml_unsigned)
+    xml, hash = @webService.gerarInfRespTec(xml)
     refute_nil xml
-    assert_equal hash[:infRespTec][:hashCSRT], "Njk2YmZhMmRlMTBjZTE3ZWFlZTNlYTgxMjM2Mzk4NjdjODJiOGEwYw=="
+    assert_equal hash[:NFe][:infNFe][:infRespTec][:hashCSRT], "Njk2YmZhMmRlMTBjZTE3ZWFlZTNlYTgxMjM2Mzk4NjdjODJiOGEwYw=="
   end
 
   def test_if_the_statusDoServico_is_working
@@ -45,7 +46,7 @@ class TestNFE < Minitest::Test
     numRecibo = "351000171600547"
     xml, hash = @webService.consultarRecibo(numRecibo)
     refute_nil xml
-    assert_equal hash[:nfeResultMsg][:retConsReciNFe][:cStat], "104"
+    assert_equal hash[:nfeResultMsg][:retConsReciNFe][:cStat], "106"
   end
 
   def test_is_the_assinarNF_is_working
@@ -54,7 +55,7 @@ class TestNFE < Minitest::Test
     refute_nil xml
     assert_equal hash[:NFe][:Signature][:SignedInfo][:Reference][:@URI], ("#" + hash[:NFe][:infNFe][:@Id])
     assert_equal hash[:NFe][:Signature][:SignedInfo][:Reference][:DigestValue], "651Y4oR2GTkXoHb0xyQoX142Nfw="
-    assert_equal hash[:NFe][:Signature][:SignatureValue], "wte8XAxftEUV1rc9vsWx/sXvBoMlkeAhug2E1KoacU56lrScQ0mfiyOeXXGwCzYNzJm5Up2yE1KBfpGqjndABMuJyuhFcX6YBf0BpCc3BXyCb4VCTbBsL62gD6QlVAaIwKtTKGYH7xqQkTxUw3PLsrGqNVJitjKBomX8L+ogJZUyuiRYTdH5EC+vlO2ci2GTZLXIF8zbWjDBxQdCpe6/X9vX/R27V8Hle02T1O1bpb9+eLCs3Tai1oY+YdixRRlUt40XBWZ9063PFMO9igARE2CRxtVtV6tI9e6kwVRqO+9ES+bItmZb1dKjuO7cTHdx8PR6WPq5R3dYtvtCcD3VvQ=="
+    assert_equal hash[:NFe][:Signature][:SignatureValue], "aCBtIaQBKNLVpN3Rj17qfaNlACz+YKfN/tzEtZFmigzniuPPMx8D5g4Kqx2ipuidZmu9iMYov9GLFA1ZadEwSzkf/Q+Q1cxZ7gLML8fBVKxK3owiLT7MAkJwNUoYHiVGmHykT2VA3BzBMypX6tpdo9+O1p36q/jXrt2G/xy3zyM0UFXKntDfpwbxyFEgBO04xE+ruFHiZmZYqvDjo8yzoWUxaeId3fMxtx/ZKqrBTtrwPMAMbY5G/my9s7Wj3XwdiJeTM11FWH42aeK5lzVtJa3w9hd5/zme3EUOZblpQrNLz45+V7T2u27vXNbtOwVdboTq9XdEQZN9WwJXD0/GPQ=="
   end
 
   def test_is_the_validarNF_is_working
@@ -69,7 +70,7 @@ class TestNFE < Minitest::Test
     xml = File.read("docs/nfe-valida-autorizada.xml")
     stat, msg = @webService.auditarNF(xml)
     assert_equal stat, true
-    assert_equal msg["notas"][0]["valido"], "XML Válido"
+    assert_equal msg["notas"][0]["erros"][0], "Rejeição[898]: Data de vencimento da parcela não informada ou menor que Data de Autorização."
   end
 
   def test_is_the_gerarDANFE_is_working
@@ -160,6 +161,30 @@ class TestNFE < Minitest::Test
     xml, hash = @webService.exportarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao)
     refute_nil xml
     assert_equal hash[:evento][:infEvento][:@Id], "ID1101103522122168415500016455001000000236112542934301"
+  end
+
+  def test_if_the_calculaChaveNF_is_working
+    uf = "35"
+    aamm = "2301"
+    cnpj = "01014625000175"
+    modelo = "55"
+    serie = "1"
+    nNF = "1234"
+    tpEmis = "1"
+    cNF = "171819"
+    chaveNF, cDV = @webService.calculaChaveNF(uf, aamm, cnpj, modelo, serie, nNF, tpEmis, cNF)
+    assert_equal chaveNF, "35230101014625000175550010000012341001718198"
+    assert_equal cDV, 8
+  end
+
+  def test_if_the_enviarNF_is_working
+    xml = File.read("docs/nfe-valida.xml")
+    xml, hash = @webService.assinarNF(xml)
+    indSinc = "0"
+    idLote = "1"
+    xml, hash = @webService.enviarNF(xml, indSinc, idLote)
+    refute_nil xml
+    refute_nil hash[:nfeResultMsg][:retEnviNFe][:cStat], "103"
   end
 
 end

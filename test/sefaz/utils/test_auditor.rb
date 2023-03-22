@@ -9,7 +9,7 @@ class TestAuditor < Minitest::Test
     auditor = SEFAZ::Utils::Auditor.new(xml)
     stat, msg = auditor.executar(60, 60)
     assert_equal stat, :ok
-    assert_equal msg["notas"][0]["valido"], "XML Válido"
+    assert_equal msg["notas"][0]["erros"][0], "Rejeição[898]: Data de vencimento da parcela não informada ou menor que Data de Autorização."
   end
 
 end

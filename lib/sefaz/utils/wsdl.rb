@@ -11,7 +11,7 @@ module SEFAZ
       # - :NfeStatusServico     - OK (statusDoServico)
       # - :NfeConsultaCadastro  - OK (consultarCadastro)
       # - :RecepcaoEvento       - OK (enviarLoteDeEvento)
-      # - :NFeAutorizacao
+      # - :NFeAutorizacao       - OK (enviarLoteNF)
       # - :NFeRetAutorizacao    - OK (consultarRecibo)
       # UF: código IBGE do Estado
   

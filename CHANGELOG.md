@@ -1,19 +1,25 @@
+# CHANGELOG
+
 ## [Unreleased]
 
-- Add ConsultarGTIN service
-- Add consultarDistribuicaoDFe service
-- Add consultarDistribuicaoDFeChave service
-- Add enviarManifestacao service
-- Add exportarDadosManifestacao service
-- Add enviarDadosManifestacao service
-- Add enviarNF service
-- Add enviarNFSincrono service
-- Add calculaChaveNF service
+- ConsultarGTIN service
+- consultarDistribuicaoDFe service
+- consultarDistribuicaoDFeChave service
+- enviarManifestacao service
+- exportarManifestacao service
+
+## [0.9.0] - 2023-03-22
+
+- Adding SEFAZ::DataSet::NFE object
+- Adding enviarNF service
+- Adding enviarLoteNF service
+- Adding calculaChaveNF service
+- Changed: method 'gerarInfRespTec' accepting XML or HASH
 
 ## [0.8.0] - 2023-01-16
 
-- Add enviarCCe service
-- Add exportarCCe service
+- Adding enviarCCe service
+- Adding exportarCCe service
 
 ## [0.7.0] - 2023-01-16
 
@@ -43,9 +49,9 @@
 - Adding calculaChaveInutilizacao service
 - Adding exportarInutilizarNF service
 - Adding enviarInutilizarNF service
-- Adding validarNF service (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)
-- Adding auditarNF service (https://validador.nfe.tecnospeed.com.br/)
-- Adding gerarDANFE service (https://www.freenfe.com.br/leitor-de-xml-online)
+- Adding validarNF service (<https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx>)
+- Adding auditarNF service (<https://validador.nfe.tecnospeed.com.br/>)
+- Adding gerarDANFE service (<https://www.freenfe.com.br/leitor-de-xml-online>)
 - Changed: README.md
 
 ## [0.5.1] - 2023-01-12

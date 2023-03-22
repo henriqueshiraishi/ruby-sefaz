@@ -12,6 +12,7 @@ require_relative "sefaz/utils/assinador"
 require_relative "sefaz/utils/validador"
 require_relative "sefaz/utils/auditor"
 require_relative "sefaz/utils/danfe"
+require_relative "sefaz/dataset/nfe"
 require_relative "sefaz/nfe"
 
 
