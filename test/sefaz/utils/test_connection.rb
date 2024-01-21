@@ -5,7 +5,7 @@ require "test_helper"
 class TestConnection < Minitest::Test
 
   def setup
-    certificate = File.read("certificate.pfx")
+    certificate = File.read("certificateSignature.pfx")
     password = "1234"
     @pkcs12 = OpenSSL::PKCS12.new(certificate, password)
   end

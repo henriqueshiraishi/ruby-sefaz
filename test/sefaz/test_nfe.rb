@@ -8,8 +8,8 @@ class TestNFE < Minitest::Test
     @webService = SEFAZ::NFE.new
     @webService.setaAmbiente({ ambiente: "2", uf: "35", cnpj: "21684155000164" })
     @webService.setaRespTecnico({ cnpj: "00.000.000/0000-00", contato: "EMPRESA", email: "contato@empresa.com.br", fone: "+551100000000", idCSRT: "01", CSRT: "G8063VRTNDMO886SFNK5LDUDEI24XJ22YIPO" })
-    @webService.setaPFXTss({ pfx: File.read("certificate.pfx"), senha: "1234" })
-    @webService.setaPFXAss({ pfx: File.read("certificate.pfx"), senha: "1234" })
+    @webService.setaPFXTss({ pfx: File.read("certificateTransmission.pfx"), senha: "020607" })
+    @webService.setaPFXAss({ pfx: File.read("certificateSignature.pfx"), senha: "1234" })
   end
 
   def test_if_the_gerarInfRespTec_is_working

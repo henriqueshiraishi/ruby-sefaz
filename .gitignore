@@ -8,5 +8,6 @@
 /tmp/
 /docs/
 Gemfile.lock
-certificate.pfx
+certificateSignature.pfx
+certificateTransmission.pfx
 snippet.txt
