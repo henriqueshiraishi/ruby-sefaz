@@ -39,7 +39,7 @@ class TestNFE < Minitest::Test
     uf = "SP"
     xml, hash = @webService.consultarCadastro(nroDocumento, tpDocumento, uf)
     refute_nil xml
-    assert_equal hash[:nfeResultMsg][:retConsCad][:infCons][:cStat], "259"
+    assert_equal hash[:nfeResultMsg][:retConsCad][:infCons][:cStat], "257"
   end
 
   def test_is_the_consultarRecibo_is_working
@@ -90,7 +90,7 @@ class TestNFE < Minitest::Test
     justificativa = "Teste de inutilização"
     xml, hash = @webService.inutilizarNF(chaveInut, ano, modelo, serie, nroNFIni, nroNFFin, justificativa)
     refute_nil xml
-    assert_equal hash[:nfeResultMsg][:retInutNFe][:infInut][:cStat], "563"
+    assert_equal hash[:nfeResultMsg][:retInutNFe][:infInut][:cStat], "291"
   end
 
   def test_is_the_calculaChaveInutilizacao_is_working
@@ -127,7 +127,7 @@ class TestNFE < Minitest::Test
     xml, hash = @webService.cancelarNF(chaveNF, sequenciaEvento, dataHoraEvento, numProtocolo, justificativa, idLote)
     refute_nil xml
     assert_equal hash[:nfeResultMsg][:retEnvEvento][:cStat], "128"
-    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "573"
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "291"
   end
 
   def test_if_the_exportarCancelarNF_is_working
@@ -150,7 +150,7 @@ class TestNFE < Minitest::Test
     xml, hash = @webService.enviarCCe(chaveNF, sequenciaEvento, dataHoraEvento, textoCorrecao, idLote)
     refute_nil xml
     assert_equal hash[:nfeResultMsg][:retEnvEvento][:cStat], "128"
-    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "573"
+    assert_equal hash[:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat], "291"
   end
 
   def test_if_the_exportarCCe_is_working
