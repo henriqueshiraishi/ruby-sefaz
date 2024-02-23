@@ -18,10 +18,10 @@ gem 'sefaz'
 
 ## Configuração
 
-Crie uma instância da classe `SEFAZ::NFE` para acessar os serviços disponíveis na biblioteca:
+Crie uma instância da classe `SEFAZ::Webservice::NFE::Client` para acessar os serviços disponíveis na biblioteca:
 
 ```ruby
-@webService = SEFAZ::NFE.new
+@webservice = SEFAZ::Webservice::NFE::Client.new
 ```
 
 Após instanciar, é necessário parametrizar a biblioteca:
@@ -29,7 +29,7 @@ Após instanciar, é necessário parametrizar a biblioteca:
 - Configuração do Ambiente
 
 ```ruby
-@webService.setaAmbiente({
+@webservice.setaAmbiente({
     ambiente: "2",              # 1=Produção; 2=Homologação
     uf: "35"                    # Código IBGE do Estado
     cnpj: "00.000.000/0000-00"  # CNPJ da empresa emissora
@@ -39,7 +39,7 @@ Após instanciar, é necessário parametrizar a biblioteca:
 - Configuração do Responsável Técnico
 
 ```ruby
-@webService.setaRespTecnico({
+@webservice.setaRespTecnico({
     cnpj: "00.000.000/0000-00",
     contato: "EMPRESA",
     email: "contato@empresa.com.br",
@@ -52,7 +52,7 @@ Após instanciar, é necessário parametrizar a biblioteca:
 - Configuração do PFX de transmissão
 
 ```ruby
-@webService = setaPFXTss({
+@webservice = setaPFXTss({
     pfx: File.read("certificado_tss.pfx"),
     senha: "senha_super_secreta"
 })
@@ -63,7 +63,7 @@ Após instanciar, é necessário parametrizar a biblioteca:
 - Configuração do PFX de assinatura
 
 ```ruby
-@webService.setaPFXAss({
+@webservice.setaPFXAss({
     pfx: File.read("certificado_ass.pfx"),
     senha: "senha_super_secreta"
 })
@@ -77,31 +77,31 @@ Após a configuração, é possível acessar os seguintes serviços:
 
 ```ruby
 # Consulta Status SEFAZ
-xml, hash = @webService.statusDoServico
+xml, hash = @webservice.statusDoServico
 
 # Consulta Situação NF
 # @chaveNF(String) = Chave de acesso de uma NF
-xml, hash = @webService.consultarNF(@chaveNF)
+xml, hash = @webservice.consultarNF(@chaveNF)
 
 # Consulta Cadastro
 # @nroDocumento(String) = Número do documento
 # @tpDocumento(String)  = CNPJ/CPF/IE
 # @uf(String) = Sigla do estado que será consultado (SP; MG; RJ; ...)
-xml, hash = @webService.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
+xml, hash = @webservice.consultarCadastro(@nroDocumento, @tpDocumento, @uf)
 
 # Consulta Recebido de Lote
 # @numRecibo(String) = Número do recibo do lote de NF-e
-xml, hash = @webService.consultarRecibo(@numRecibo)
+xml, hash = @webservice.consultarRecibo(@numRecibo)
 
 # Assinar NF - PFX de assinatura - Certificado A1
 # @documento(Hash ou String) = XML ou HASH que será assinado
-xml, hash = @webService.assinarNF(@documento)
+xml, hash = @webservice.assinarNF(@documento)
 
 # Enviar NF - Necessário uma NF assinada
 # @documento(Hash ou String) = XML ou HASH assinado que será enviado
 # @indSinc(String) = "0"=Assíncrono / "1"=Síncrono
 # @idLote(String) = Identificador de controle do Lote de envio do Lote
-xml, hash = @webService.enviarNF(@documento, @indSinc, @idLote)
+xml, hash = @webservice.enviarNF(@documento, @indSinc, @idLote)
 
 # Envia Lote de NF - Necessário que cada NF esteja assinada
 # OBS: Recomendado para envio em lote de NF, cada elemento do Array pode ser Hash ou XML assinados
@@ -109,10 +109,10 @@ xml, hash = @webService.enviarNF(@documento, @indSinc, @idLote)
 # @indSinc(String) = "0"=Assíncrono / "1"=Síncrono
 # @idLote(String) = Identificador de controle do Lote de envio do Lote
 # Exemplo de @lote:
-# @nf1_xml, @nf1_hash = @webService.assinarNF(...)
-# @nf2_xml, @nf2_hash = @webService.assinarNF(...)
+# @nf1_xml, @nf1_hash = @webservice.assinarNF(...)
+# @nf2_xml, @nf2_hash = @webservice.assinarNF(...)
 # @lote = [ @nf1_xml, @nf2_hash ]
-xml, hash = @webService.enviarLoteNF(@lote, @indSinc, @idLote)
+xml, hash = @webservice.enviarLoteNF(@lote, @indSinc, @idLote)
 
 # Calcular Chave NF
 # @uf = Código da UF do emitente do Documento Fiscal
@@ -123,7 +123,7 @@ xml, hash = @webService.enviarLoteNF(@lote, @indSinc, @idLote)
 # @nNF = Número do Documento Fiscal
 # @tpEmis = Forma de emissão da NF-e
 # @cNF = Código Numérico que compõe a Chave de Acesso (ID do sistema)
-chaveNF, cDV = @webService.calculaChaveNF(@uf, @aamm, @cnpj, @modelo, @serie, @nNF, @tpEmis, @cNF)
+chaveNF, cDV = @webservice.calculaChaveNF(@uf, @aamm, @cnpj, @modelo, @serie, @nNF, @tpEmis, @cNF)
 
 # Valida NF no SEFAZ RS NF-e (https://www.sefaz.rs.gov.br/NFE/NFE-VAL.aspx)
 # @documento(Hash ou String) = XML ou HASH que será validado
@@ -132,7 +132,7 @@ chaveNF, cDV = @webService.calculaChaveNF(@uf, @aamm, @cnpj, @modelo, @serie, @n
 # => @stat = True/False se a validação foi executada com sucesso
 # => @msg  = Hash com todas as mensagens geradas pelo validador
 # => @err  = Hash com todas as mensagens de erros geradas pelo validador
-stat, msg, err = @webService.validarNF(@documento)
+stat, msg, err = @webservice.validarNF(@documento)
 
 # Auditar NF no validador TecnoSpeed (https://validador.nfe.tecnospeed.com.br/)
 # @documento(Hash ou String) = XML ou HASH que será auditado
@@ -140,15 +140,7 @@ stat, msg, err = @webService.validarNF(@documento)
 # @readTimeout(Integer) = Tempo de espera em segundos para ler resposta (opcional: padrão 60)
 # => @stat = True/False se o auditor foi executado com sucesso
 # => @msg  = Hash com todas as mensagens geradas pelo auditor
-stat, msg = @webService.auditarNF(@documento)
-
-# Gerar DANFE pelo FreeNFe (https://www.freenfe.com.br/leitor-de-xml-online)
-# @documento(Hash ou String) = XML ou HASH que será gerado
-# @openTimeout(Integer) = Tempo de espera em segundos para abrir conexão (opcional: padrão 60)
-# @readTimeout(Integer) = Tempo de espera em segundos para ler resposta (opcional: padrão 60)
-# => @stat = True/False se o gerador de DANFE foi executado com sucesso
-# => @pdf  = String com binário do arquivo PDF gerado
-stat, pdf = @webService.gerarDANFE(@documento)
+stat, msg = @webservice.auditarNF(@documento)
 
 # Inutilizar NF - Gera, assina e envia o documento com certificado A1 (exportarInutilizarNF, assinarNF, enviarInutilizarNF)
 # OBS: Caso parâmetro @chaveInut estiver em branco, a chave será calculada automaticamente (calculaChaveInutilizacao)
@@ -159,7 +151,7 @@ stat, pdf = @webService.gerarDANFE(@documento)
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
 # @justificativa = Informar a justificativa do pedido de inutilização
-xml, hash = @webService.inutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+xml, hash = @webservice.inutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
 
 # Exportar Inutilização NF - Exporta um documento bruto (sem assinatura)
 # OBS: Recomendado quando utilizado o certificado A3
@@ -171,12 +163,12 @@ xml, hash = @webService.inutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIn
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
 # @justificativa = Informar a justificativa do pedido de inutilização
-xml, hash = @webService.exportarInutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
+xml, hash = @webservice.exportarInutilizarNF(@chaveInut, @ano, @modelo, @serie, @nroNFIni, @nroNFFin, @justificativa)
 
 # Enviar Inutilização NF - Necessário um documento assinado
 # OBS: Recomendado quando utilizado o certificado A3
 # @documento(Hash ou String) = XML ou HASH assinado que será enviado
-xml, hash = @webService.enviarInutilizarNF(@documento)
+xml, hash = @webservice.enviarInutilizarNF(@documento)
 
 # Calcular Chave de Inutilização
 # @ano = Ano de inutilização da numeração
@@ -185,7 +177,7 @@ xml, hash = @webService.enviarInutilizarNF(@documento)
 # @serie = Série da NF-e
 # @nroNFIni = Número da NF-e inicial a ser inutilizada
 # @nroNFFin = Número da NF-e final a ser inutilizada
-chaveInut = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin)
+chaveInut = @webservice.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @nroNFIni, @nroNFFin)
 
 # Cancelar NF - Gera, assina e envia o documento com certificado A1 (exportarCancelarNF, assinarNF, enviarEvento)
 # @chaveNF = Chave de acesso de uma NF
@@ -194,7 +186,7 @@ chaveInut = @webService.calculaChaveInutilizacao(@ano, @cnpj, @modelo, @serie, @
 # @numProtocolo = Número do Protocolo de registro da NF
 # @justificativa = Motivo do cancelamento da NF
 # @idLote = Número de controle interno
-xml, hash = @webService.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa, @idLote)
+xml, hash = @webservice.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa, @idLote)
 
 # Exportar Cancelar NF - Exporta um documento bruto (sem assinatura)
 # OBS: Recomendado quando utilizado o certificado A3
@@ -204,13 +196,13 @@ xml, hash = @webService.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, 
 # @numProtocolo = Número do Protocolo de registro da NF
 # @justificativa = Motivo do cancelamento da NF
 # @idLote = Número de controle interno
-xml, hash = @webService.exportarCancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa)
+xml, hash = @webservice.exportarCancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @numProtocolo, @justificativa)
 
 # Enviar Evento - Necessário um documento assinado
 # OBS: Recomendado quando utilizado o certificado A3
 # @evento(Hash ou String) = XML ou HASH assinado que será enviado
 # @idLote(String) = Identificador de controle do Lote de envio do Evento
-xml, hash = @webService.enviarEvento(@evento, @idLote)
+xml, hash = @webservice.enviarEvento(@evento, @idLote)
 
 # Envia Lote de Eventos - Necessário que cada evento esteja assinado
 # OBS: Recomendado quando utilizado o certificado A3 e/ou para envio em lote de eventos
@@ -218,10 +210,10 @@ xml, hash = @webService.enviarEvento(@evento, @idLote)
 # @lote(Array) = Array de eventos assinados
 # @idLote(String) = Identificador de controle do Lote de envio do Evento
 # Exemplo de @lote:
-# @eve1_xml, @eve1_hash = @webService.exportarCancelarNF(...)
-# @eve2_xml, @eve2_hash = @webService.exportarCancelarNF(...)
+# @eve1_xml, @eve1_hash = @webservice.exportarCancelarNF(...)
+# @eve2_xml, @eve2_hash = @webservice.exportarCancelarNF(...)
 # @lote = [ @eve1_xml, @eve2_hash ]
-xml, hash = @webService.enviarLoteDeEvento(@lote, @idLote)
+xml, hash = @webservice.enviarLoteDeEvento(@lote, @idLote)
 
 # Enviar CCe - Gera, assina e envia o documento com certificado A1 (exportarCCe, assinarNF, enviarEvento)
 # @chaveNF = Chave de acesso de uma NF
@@ -229,7 +221,7 @@ xml, hash = @webService.enviarLoteDeEvento(@lote, @idLote)
 # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
 # @textoCorrecao = Motivo do cancelamento da NF
 # @idLote = Número de controle interno
-xml, hash = @webService.enviarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao, @idLote)
+xml, hash = @webservice.enviarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao, @idLote)
 
 # Exportar CCe - Exporta um documento bruto (sem assinatura)
 # OBS: Recomendado quando utilizado o certificado A3
@@ -237,17 +229,17 @@ xml, hash = @webService.enviarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @
 # @sequenciaEvento = O número do evento
 # @dataHoraEvento = Data e Hora da Emissão do Evento (ex: 2023-01-15T17:23:00+03:00)
 # @textoCorrecao = Motivo do cancelamento da NF
-xml, hash = @webService.exportarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao)
+xml, hash = @webservice.exportarCCe(@chaveNF, @sequenciaEvento, @dataHoraEvento, @textoCorrecao)
 
 # Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico
 # Necessário quando estiver emitindo uma NF-e/NFC-e
 # @documento(Hash ou String) = XML ou HASH que será tratado
-xml, hash = @webService.gerarInfRespTec(@documento)
+xml, hash = @webservice.gerarInfRespTec(@documento)
 ```
 
-## Enviando NF com DataSet
+## Enviando NF com Dataset
 
-Acessa o arquivo [lib/sefaz/dataset/nfe.md](https://github.com/henriqueshiraishi/ruby-sefaz/blob/main/lib/sefaz/dataset/nfe.md) para visualizar todos os campos que pode ser informado no DataSet.
+Acessa o arquivo [docs/NFe-NFCe/_dataset.md](https://github.com/henriqueshiraishi/ruby-sefaz/blob/main/docs/NFe-NFCe/_dataset.md) para visualizar todos os campos que pode ser informado no Dataset.
 
 ```ruby
 # Declarando os campos necessários para calcular a chave da NF
@@ -261,154 +253,152 @@ Acessa o arquivo [lib/sefaz/dataset/nfe.md](https://github.com/henriqueshiraishi
 @cNF = "07522998"
 
 # Calculando a chave e o dígito verificador da NF
-@chaveNF, @cDV = @webService.calculaChaveNF(@uf, @aamm, @cnpj, @modelo, @serie, @nNF, @tpEmis, @cNF)
+@chaveNF, @cDV = @webservice.calculaChaveNF(@uf, @aamm, @cnpj, @modelo, @serie, @nNF, @tpEmis, @cNF)
 
-# Instanciando objeto DataSet
-@dataSet = SEFAZ::DataSet::NFE.new(@chaveNF)
+# Instanciando objeto Dataset
+@dataset = SEFAZ::Webservice::NFE::Dataset.new(@chaveNF)
 
 # Inserindo os dados da NF
-@dataSet.ide.cUF = @uf
-@dataSet.ide.cNF = @cNF
-@dataSet.ide.natOp = "Venda de Mercadoria"
-@dataSet.ide.mod = @modelo
-@dataSet.ide.serie = @serie
-@dataSet.ide.nNF = @nNF
-@dataSet.ide.dhEmi = "2023-03-21T17:10:03+00:00"
-@dataSet.ide.dhSaiEnt = "2023-03-21T17:10:03+00:00"
-@dataSet.ide.tpNF = "1"
-@dataSet.ide.idDest = "1"
-@dataSet.ide.cMunFG = "3550308"
-@dataSet.ide.tpImp = "1"
-@dataSet.ide.tpEmis = @tpEmis
-@dataSet.ide.cDV = @cDV
-@dataSet.ide.tpAmb = "2"
-@dataSet.ide.finNFe = "1"
-@dataSet.ide.indFinal = "0"
-@dataSet.ide.indPres = "0"
-@dataSet.ide.procEmi = "0"
-@dataSet.ide.verProc = "4.0.1"
+@dataset.ide.cUF = @uf
+@dataset.ide.cNF = @cNF
+@dataset.ide.natOp = "Venda de Mercadoria"
+@dataset.ide.mod = @modelo
+@dataset.ide.serie = @serie
+@dataset.ide.nNF = @nNF
+@dataset.ide.dhEmi = "2023-03-21T17:10:03+00:00"
+@dataset.ide.dhSaiEnt = "2023-03-21T17:10:03+00:00"
+@dataset.ide.tpNF = "1"
+@dataset.ide.idDest = "1"
+@dataset.ide.cMunFG = "3550308"
+@dataset.ide.tpImp = "1"
+@dataset.ide.tpEmis = @tpEmis
+@dataset.ide.cDV = @cDV
+@dataset.ide.tpAmb = "2"
+@dataset.ide.finNFe = "1"
+@dataset.ide.indFinal = "0"
+@dataset.ide.indPres = "0"
+@dataset.ide.procEmi = "0"
+@dataset.ide.verProc = "4.0.1"
 
-@dataSet.emit.CNPJ = @cnpj
-@dataSet.emit.xNome = "PHS INDUSTRIA METALURGICA EIRELI"
-@dataSet.emit.xFant = "PHS"
-@dataSet.emit.enderEmit.xLgr = "RUA SANTO HENRIQUE"
-@dataSet.emit.enderEmit.nro = "926"
-@dataSet.emit.enderEmit.xBairro = "VILA RE"
-@dataSet.emit.enderEmit.cMun = "3550308"
-@dataSet.emit.enderEmit.xMun = "SAO PAULO"
-@dataSet.emit.enderEmit.UF = "SP"
-@dataSet.emit.enderEmit.CEP = "03664010"
-@dataSet.emit.enderEmit.cPais = "1058"
-@dataSet.emit.enderEmit.xPais = "Brasil"
-@dataSet.emit.enderEmit.fone = "1134676938"
-@dataSet.emit.IE = "144190701117"
-@dataSet.emit.IM = "51610965"
-@dataSet.emit.CNAE = "2599399"
-@dataSet.emit.CRT = "1"
+@dataset.emit.CNPJ = @cnpj
+@dataset.emit.xNome = "PHS INDUSTRIA METALURGICA EIRELI"
+@dataset.emit.xFant = "PHS"
+@dataset.emit.enderEmit.xLgr = "RUA SANTO HENRIQUE"
+@dataset.emit.enderEmit.nro = "926"
+@dataset.emit.enderEmit.xBairro = "VILA RE"
+@dataset.emit.enderEmit.cMun = "3550308"
+@dataset.emit.enderEmit.xMun = "SAO PAULO"
+@dataset.emit.enderEmit.UF = "SP"
+@dataset.emit.enderEmit.CEP = "03664010"
+@dataset.emit.enderEmit.cPais = "1058"
+@dataset.emit.enderEmit.xPais = "Brasil"
+@dataset.emit.enderEmit.fone = "1134676938"
+@dataset.emit.IE = "144190701117"
+@dataset.emit.IM = "51610965"
+@dataset.emit.CNAE = "2599399"
+@dataset.emit.CRT = "1"
 
-@dataSet.dest.CNPJ = "01947271000111"
-@dataSet.dest.xNome = "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL"
-@dataSet.dest.enderDest.xLgr = "RUA SALGADO DE CASTRO"
-@dataSet.dest.enderDest.nro = "265"
-@dataSet.dest.enderDest.xBairro = "VILA MARINA"
-@dataSet.dest.enderDest.cMun = "3513801"
-@dataSet.dest.enderDest.xMun = "DIADEMA"
-@dataSet.dest.enderDest.UF = "SP"
-@dataSet.dest.enderDest.CEP = "09920690"
-@dataSet.dest.enderDest.cPais = "1058"
-@dataSet.dest.enderDest.xPais = "BRASIL"
-@dataSet.dest.enderDest.fone = "1140555455"
-@dataSet.dest.indIEDest = "1"
-@dataSet.dest.IE = "286145468117"
+@dataset.dest.CNPJ = "01947271000111"
+@dataset.dest.xNome = "NF-E EMITIDA EM AMBIENTE DE HOMOLOGACAO - SEM VALOR FISCAL"
+@dataset.dest.enderDest.xLgr = "RUA SALGADO DE CASTRO"
+@dataset.dest.enderDest.nro = "265"
+@dataset.dest.enderDest.xBairro = "VILA MARINA"
+@dataset.dest.enderDest.cMun = "3513801"
+@dataset.dest.enderDest.xMun = "DIADEMA"
+@dataset.dest.enderDest.UF = "SP"
+@dataset.dest.enderDest.CEP = "09920690"
+@dataset.dest.enderDest.cPais = "1058"
+@dataset.dest.enderDest.xPais = "BRASIL"
+@dataset.dest.enderDest.fone = "1140555455"
+@dataset.dest.indIEDest = "1"
+@dataset.dest.IE = "286145468117"
 
-@dataSet.incluirParte("DET")
+@dataset.add("DET") do |det|
+    det.prod.cProd = "5.35.0160"
+    det.prod.cEAN = "SEM GTIN"
+    det.prod.xProd = "T-176, LATAO D5X4,,5MM, FURO 1.2MM"
+    det.prod.NCM = "74153300"
+    det.prod.CEST = "1006600"
+    det.prod.CFOP = "5101"
+    det.prod.uCom = "PC"
+    det.prod.qCom = "1000.0"
+    det.prod.vUnCom = "0.3800"
+    det.prod.vProd = "380.00"
+    det.prod.cEANTrib = "SEM GTIN"
+    det.prod.uTrib = "PC"
+    det.prod.qTrib = "1000.0"
+    det.prod.vUnTrib = "0.3800"
+    det.prod.indTot = "1"
+    det.prod.xPed = "OC 0123-000033"
 
-@dataSet.det.prod.cProd = "5.35.0160"
-@dataSet.det.prod.cEAN = "SEM GTIN"
-@dataSet.det.prod.xProd = "T-176, LATAO D5X4,,5MM, FURO 1.2MM"
-@dataSet.det.prod.NCM = "74153300"
-@dataSet.det.prod.CEST = "1006600"
-@dataSet.det.prod.CFOP = "5101"
-@dataSet.det.prod.uCom = "PC"
-@dataSet.det.prod.qCom = "1000.0"
-@dataSet.det.prod.vUnCom = "0.3800"
-@dataSet.det.prod.vProd = "380.00"
-@dataSet.det.prod.cEANTrib = "SEM GTIN"
-@dataSet.det.prod.uTrib = "PC"
-@dataSet.det.prod.qTrib = "1000.0"
-@dataSet.det.prod.vUnTrib = "0.3800"
-@dataSet.det.prod.indTot = "1"
-@dataSet.det.prod.xPed = "OC 0123-000033"
+    det.imposto.vTotTrib = "0.00"
 
-@dataSet.det.imposto.vTotTrib = "0.00"
+    det.imposto.ICMS.ICMSSN101.orig = "0"
+    det.imposto.ICMS.ICMSSN101.CSOSN = "101"
+    det.imposto.ICMS.ICMSSN101.pCredSN = "1.86"
+    det.imposto.ICMS.ICMSSN101.vCredICMSSN = "7.07"
 
-@dataSet.det.imposto.ICMS.ICMSSN101.orig = "0"
-@dataSet.det.imposto.ICMS.ICMSSN101.CSOSN = "101"
-@dataSet.det.imposto.ICMS.ICMSSN101.pCredSN = "1.86"
-@dataSet.det.imposto.ICMS.ICMSSN101.vCredICMSSN = "7.07"
+    det.imposto.PIS.PISNT.CST = "07"
+    det.imposto.COFINS.COFINSNT.CST = "07"
+end
 
-@dataSet.det.imposto.PIS.PISNT.CST = "07"
-@dataSet.det.imposto.COFINS.COFINSNT.CST = "07"
+@dataset.total.ICMSTot.vBC = "0.00"
+@dataset.total.ICMSTot.vICMS = "0.00"
+@dataset.total.ICMSTot.vICMSDeson = "0.00"
+@dataset.total.ICMSTot.vFCPUFDest = "0.00"
+@dataset.total.ICMSTot.vICMSUFDest = "0.00"
+@dataset.total.ICMSTot.vICMSUFRemet = "0.00"
+@dataset.total.ICMSTot.vFCP = "0.00"
+@dataset.total.ICMSTot.vBCST = "0.00"
+@dataset.total.ICMSTot.vST = "0.00"
+@dataset.total.ICMSTot.vFCPST = "0.00"
+@dataset.total.ICMSTot.vFCPSTRet = "0.00"
+@dataset.total.ICMSTot.vProd = "380.00"
+@dataset.total.ICMSTot.vFrete = "0.00"
+@dataset.total.ICMSTot.vSeg = "0.00"
+@dataset.total.ICMSTot.vDesc = "0.00"
+@dataset.total.ICMSTot.vII = "0.00"
+@dataset.total.ICMSTot.vIPI = "0.00"
+@dataset.total.ICMSTot.vIPIDevol = "0.00"
+@dataset.total.ICMSTot.vPIS = "0.00"
+@dataset.total.ICMSTot.vCOFINS = "0.00"
+@dataset.total.ICMSTot.vOutro = "0.00"
+@dataset.total.ICMSTot.vNF = "380.00"
+@dataset.total.ICMSTot.vTotTrib = "0.00"
 
-@dataSet.salvarParte("DET")
+@dataset.transp.modFrete = "0"
 
-@dataSet.total.ICMSTot.vBC = "0.00"
-@dataSet.total.ICMSTot.vICMS = "0.00"
-@dataSet.total.ICMSTot.vICMSDeson = "0.00"
-@dataSet.total.ICMSTot.vFCPUFDest = "0.00"
-@dataSet.total.ICMSTot.vICMSUFDest = "0.00"
-@dataSet.total.ICMSTot.vICMSUFRemet = "0.00"
-@dataSet.total.ICMSTot.vFCP = "0.00"
-@dataSet.total.ICMSTot.vBCST = "0.00"
-@dataSet.total.ICMSTot.vST = "0.00"
-@dataSet.total.ICMSTot.vFCPST = "0.00"
-@dataSet.total.ICMSTot.vFCPSTRet = "0.00"
-@dataSet.total.ICMSTot.vProd = "380.00"
-@dataSet.total.ICMSTot.vFrete = "0.00"
-@dataSet.total.ICMSTot.vSeg = "0.00"
-@dataSet.total.ICMSTot.vDesc = "0.00"
-@dataSet.total.ICMSTot.vII = "0.00"
-@dataSet.total.ICMSTot.vIPI = "0.00"
-@dataSet.total.ICMSTot.vIPIDevol = "0.00"
-@dataSet.total.ICMSTot.vPIS = "0.00"
-@dataSet.total.ICMSTot.vCOFINS = "0.00"
-@dataSet.total.ICMSTot.vOutro = "0.00"
-@dataSet.total.ICMSTot.vNF = "380.00"
-@dataSet.total.ICMSTot.vTotTrib = "0.00"
+@dataset.add("VOL") do |vol|
+    vol.qVol = "1"
+    vol.esp = "VOLUME"
+    vol.pesoL = "1.000"
+    vol.pesoB = "1.000"
+end
 
-@dataSet.transp.modFrete = "0"
+@dataset.cobr.fat.nFat = "86"
+@dataset.cobr.fat.vOrig = "380.00"
+@dataset.cobr.fat.vDesc = "0.00"
+@dataset.cobr.fat.vLiq = "380.00"
 
-@dataSet.incluirParte("VOL")
-@dataSet.vol.qVol = "1"
-@dataSet.vol.esp = "VOLUME"
-@dataSet.vol.pesoL = "1.000"
-@dataSet.vol.pesoB = "1.000"
-@dataSet.salvarParte("VOL")
+@dataset.add("DUP") do |dup|
+    dup.nDup = "001"
+    dup.dVenc = "2023-03-31"
+    dup.vDup = "380.00"
+end
 
-@dataSet.cobr.fat.nFat = "86"
-@dataSet.cobr.fat.vOrig = "380.00"
-@dataSet.cobr.fat.vDesc = "0.00"
-@dataSet.cobr.fat.vLiq = "380.00"
+@dataset.add("DETPAG") do |detpag|
+    detpag.tPag = "15"
+    detpag.vPag = "380.00"
+end
 
-@dataSet.incluirParte("DUP")
-@dataSet.dup.nDup = "001"
-@dataSet.dup.dVenc = "2023-03-31"
-@dataSet.dup.vDup = "380.00"
-@dataSet.salvarParte("DUP")
-
-@dataSet.incluirParte("DETPAG")
-@dataSet.detPag.tPag = "15"
-@dataSet.detPag.vPag = "380.00"
-@dataSet.salvarParte("DETPAG")
-
-@dataSet.infAdic.infCpl = "PEDIDO DO CLIENTE N OC 0123-000033. DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL: PERMITE O APROVEITAMENTO DO CREDITO DE ICMS NO VALOR DE R 7,07; CORRESPONDENTE A ALIQUOTA DE 1.86, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR N 123, DE 2006"
+@dataset.infAdic.infCpl = "PEDIDO DO CLIENTE N OC 0123-000033. DOCUMENTO EMITIDO POR ME OU EPP OPTANTE PELO SIMPLES NACIONAL: PERMITE O APROVEITAMENTO DO CREDITO DE ICMS NO VALOR DE R 7,07; CORRESPONDENTE A ALIQUOTA DE 1.86, NOS TERMOS DO ART. 23 DA LEI COMPLEMENTAR N 123, DE 2006"
 
 # Gerando e assinando XML
-@xml, _ = @dataSet.gerarNF
-@xml, _ = @webService.assinarNF(@xml)
+@xml, _ = @dataset.gerarNF
+@xml, _ = @webservice.assinarNF(@xml)
 
 # Enviando NF
-@retEnviNFe = @webService.enviarNF(@xml, "0", "1")
+@retEnviNFe = @webservice.enviarNF(@xml, "0", "1")
 ```
 
 ## Consulta de recibo da NF
@@ -416,7 +406,7 @@ Acessa o arquivo [lib/sefaz/dataset/nfe.md](https://github.com/henriqueshiraishi
 ```ruby
 # A partir do @retEnviNFe do exemplo anterior
 @nRec = @retEnviNFe[1][:nfeResultMsg][:retEnviNFe][:infRec][:nRec]
-@retConsReciNFe = @webService.consultarRecibo(@nRec)
+@retConsReciNFe = @webservice.consultarRecibo(@nRec)
 
 @cStat = @retConsReciNFe[1][:nfeResultMsg][:retConsReciNFe][:protNFe][:infProt][:cStat]
 @nProt = @retConsReciNFe[1][:nfeResultMsg][:retConsReciNFe][:protNFe][:infProt][:nProt]
@@ -430,7 +420,7 @@ Acessa o arquivo [lib/sefaz/dataset/nfe.md](https://github.com/henriqueshiraishi
 @dataHoraEvento = "2023-03-22T17:00:00+03:00"
 @justificativa = "NF-e emitida em duplicidade."
 @idLote = "1"
-@retEnvEvento = @webService.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @nProt, @justificativa, @idLote)
+@retEnvEvento = @webservice.cancelarNF(@chaveNF, @sequenciaEvento, @dataHoraEvento, @nProt, @justificativa, @idLote)
 
 @cStat = @retEnvEvento[1][:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:cStat]
 @xMotivo = @retEnvEvento[1][:nfeResultMsg][:retEnvEvento][:retEvento][:infEvento][:xMotivo]

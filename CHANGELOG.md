@@ -8,6 +8,10 @@
 - enviarManifestacao service
 - exportarManifestacao service
 
+## [1.0.0] - 2024-02-23
+
+- Major update: Redesign and improvements to the library
+
 ## [0.9.0] - 2023-03-22
 
 - Adding SEFAZ::DataSet::NFE object

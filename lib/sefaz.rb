@@ -2,30 +2,37 @@
 
 require 'json'
 require 'net/http'
-require 'net/http/post/multipart'
 require 'savon'
 
-require_relative "sefaz/utils/version"
-require_relative "sefaz/utils/connection"
-require_relative "sefaz/utils/wsdl"
-require_relative "sefaz/utils/assinador"
-require_relative "sefaz/utils/validador"
-require_relative "sefaz/utils/auditor"
-require_relative "sefaz/utils/danfe"
-require_relative "sefaz/dataset/nfe"
-require_relative "sefaz/nfe"
+require 'sefaz/base'
+require 'sefaz/configuration'
+require 'sefaz/exception'
+require 'sefaz/refinement'
+require 'sefaz/version'
 
+require 'sefaz/utils/connection'
+require 'sefaz/utils/signer'
+require 'sefaz/webservice/base'
+
+require 'sefaz/webservice/nfe/client'
+require 'sefaz/webservice/nfe/auditor'
+require 'sefaz/webservice/nfe/connection'
+require 'sefaz/webservice/nfe/dataset'
+require 'sefaz/webservice/nfe/validator'
+require 'sefaz/webservice/nfe/wsdl'
 
 module SEFAZ
-
-  def self.to_xml(hash); Gyoku.xml(hash, key_converter: :none) end
-  def self.to_hash(xml); Nori.new(convert_tags_to: lambda { |key| key.to_sym }).parse(xml) end
-  def self.remove_blank(documento)
-    xml = (documento.is_a?(Hash) ? SEFAZ.to_xml(documento) : documento)
-    doc = Nokogiri::XML::Document.parse(xml, nil, "utf-8", Nokogiri::XML::ParseOptions::NOBLANKS)
-    doc.search('*').each { |node| node.remove if node.content.strip.blank? }
-    xml = doc.canonicalize
-    return [xml, SEFAZ.to_hash(xml)]
+  # Personalize as configurações padrão da biblioteca usando bloco
+  # config/initializers/sefaz_config.rb
+  #   SEFAZ.configure do |config|
+  #     config.xxxxxxx = "xxxxxxx"
+  #   end
+  # Se nenhum bloco for fornecido, retorna o objeto de configuração padrão
+  def self.configure
+    if block_given?
+      yield(Configuration.default)
+    else
+      Configuration.default
+    end
   end
-
 end

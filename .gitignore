@@ -6,7 +6,4 @@
 /pkg/
 /spec/reports/
 /tmp/
-/docs/
-certificateSignature.pfx
-certificateTransmission.pfx
-snippet.txt
+/certs/

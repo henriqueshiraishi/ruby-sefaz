@@ -1,15 +1,14 @@
 # frozen_string_literal: true
 
-require_relative "lib/sefaz/utils/version"
+require_relative "lib/sefaz/version"
 
 Gem::Specification.new do |spec|
   spec.name    = "sefaz"
-  spec.version = SEFAZ::Utils::VERSION
+  spec.version = SEFAZ::VERSION
   spec.authors = ["Henrique Shiraishi"]
   spec.email   = ["henriqueashiraishi@gmail.com"]
 
-  spec.summary     = "Módulo de serviços da SEFAZ"
-  spec.description = "Biblioteca de serviços e transmissão da SEFAZ"
+  spec.summary     = "Integração com a Secretaria da Fazenda (SEFAZ)."
   spec.homepage    = "https://github.com/henriqueshiraishi/ruby-sefaz"
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 2.5.1"
@@ -31,7 +30,6 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "savon", "~> 2.13.0"
-  spec.add_dependency "multipart-post", "~> 2.2.3"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
