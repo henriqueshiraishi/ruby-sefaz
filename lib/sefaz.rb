@@ -21,6 +21,7 @@ require 'sefaz/webservice/nfe/dataset'
 require 'sefaz/webservice/nfe/validator'
 require 'sefaz/webservice/nfe/wsdl'
 
+require 'sefaz/webservice/sat/dataset/cancel'
 require 'sefaz/webservice/sat/dataset/sale'
 
 module SEFAZ

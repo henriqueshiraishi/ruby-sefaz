@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sefaz (1.1.0)
+    sefaz (1.2.0)
       savon (~> 2.13.0)
 
 GEM

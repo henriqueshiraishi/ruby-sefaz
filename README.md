@@ -439,6 +439,17 @@ Acessa o arquivo [docs/CFe-SAT/_SALE_dataset.md](https://github.com/henriqueshir
 @xml, @hash = @dataset.gerarCF
 ```
 
+### Arquivo de Cancelamento
+
+Acessa o arquivo [docs/CFe-SAT/_CANCEL_dataset.md](https://github.com/henriqueshiraishi/ruby-sefaz/blob/main/docs/CFe-SAT/_CANCEL_dataset.md) para visualizar todos os campos que pode ser informado no Dataset.
+
+```ruby
+# Dataset para gerar arquivo de cancelamento do CFe-SAT
+@dataset = SEFAZ::Webservice::SAT::Dataset::Cancel.new
+...
+@xml, @hash = @dataset.gerarCF
+```
+
 ## Desenvolvimento
 
 Depois de verificar o repositório, execute `bin/setup` para instalar as dependências. Em seguida, execute `rake test` para executar os testes. Você também pode executar `bin/console` para um prompt interativo que permitirá que você experimente.

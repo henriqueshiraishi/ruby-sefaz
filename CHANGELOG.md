@@ -8,6 +8,10 @@
 - enviarManifestacao service
 - exportarManifestacao service
 
+## [1.2.0] - 2024-02-24
+
+- Adding SEFAZ::Webservice::SAT::Dataset::Cancel to cancel XML (CFe-SAT)
+
 ## [1.1.0] - 2024-02-23
 
 - Adding SEFAZ::Webservice::SAT::Dataset::Sale to sale XML (CFe-SAT)
