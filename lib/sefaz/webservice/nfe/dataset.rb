@@ -6,7 +6,7 @@ module SEFAZ
       # Principal classe de elaboração do XML para o módulo NF-e/NFC-e
       class Dataset
 
-        attr_accessor :ide, :NFref, :emit, :avulsa, :dest, :retirada, :entrega, :autXML, :det, :DI, :adi, :detExport, :rastro, :arma, :total, :transp, :reboque, :vol, :lacres, :cobr, :dup, :detPag, :infIntermed, :infAdic, :obscont, :obsfisco, :procref, :exporta, :compra, :forDia, :deduc, :infRespTec, :infNFeSupl
+        attr_accessor :ide, :NFref, :emit, :avulsa, :dest, :retirada, :entrega, :autXML, :det, :DI, :adi, :detExport, :rastro, :arma, :total, :transp, :reboque, :vol, :lacres, :cobr, :dup, :detPag, :infIntermed, :infAdic, :obscont, :obsfisco, :procref, :exporta, :compra, :cana, :forDia, :deduc, :infRespTec, :infNFeSupl
   
         IDE           = Struct.new("IDE", :cUF, :cNF, :natOp, :mod, :serie, :nNF, :dhEmi, :dhSaiEnt, :tpNF, :idDest, :cMunFG, :tpImp, :tpEmis, :cDV, :tpAmb, :finNFe, :indFinal, :indPres, :indIntermed, :procEmi, :verProc, :dhCont, :xJust, :NFref)
         NFREF         = Struct.new("NFREF", :refNFe, :cUF, :AAMM, :CNPJ, :CPF, :IE, :mod, :serie, :nNF, :refCTe, :nECF, :nCOO)

@@ -21,6 +21,8 @@ require 'sefaz/webservice/nfe/dataset'
 require 'sefaz/webservice/nfe/validator'
 require 'sefaz/webservice/nfe/wsdl'
 
+require 'sefaz/webservice/sat/dataset/sale'
+
 module SEFAZ
   # Personalize as configurações padrão da biblioteca usando bloco
   # config/initializers/sefaz_config.rb

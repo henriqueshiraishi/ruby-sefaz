@@ -8,6 +8,10 @@
 - enviarManifestacao service
 - exportarManifestacao service
 
+## [1.1.0] - 2024-02-23
+
+- Adding SEFAZ::Webservice::SAT::Dataset::Sale to sale XML (CFe-SAT)
+
 ## [1.0.0] - 2024-02-23
 
 - Major update: Redesign and improvements to the library
