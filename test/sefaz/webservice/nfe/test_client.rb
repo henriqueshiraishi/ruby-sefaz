@@ -59,7 +59,7 @@ class SEFAZ::Webservice::NFE::TestClient < Minitest::Test
   end
 
   def test_is_the_validarNF_is_working
-    xml = File.read("test/fixtures/nfe-valida-autorizada.xml")
+    xml = File.read("test/fixtures/NFe/NFe-enviarNF-Autorizado.xml")
     stat, msg, err = @webservice.validarNF(xml)
     assert_equal stat, true
     assert_equal msg.length, 3
@@ -67,7 +67,7 @@ class SEFAZ::Webservice::NFE::TestClient < Minitest::Test
   end
 
   def test_is_the_auditarNF_is_working
-    xml = File.read("test/fixtures/nfe-valida-autorizada.xml")
+    xml = File.read("test/fixtures/NFe/NFe-enviarNF-Autorizado.xml")
     stat, msg = @webservice.auditarNF(xml)
     assert_equal stat, true
     assert_equal msg["notas"][0]["erros"][0], "Rejeição[898]: Data de vencimento da parcela não informada ou menor que Data de Autorização."
@@ -171,7 +171,7 @@ class SEFAZ::Webservice::NFE::TestClient < Minitest::Test
   end
 
   def test_if_the_enviarNF_is_working
-    xml = File.read("test/fixtures/nfe-valida.xml")
+    xml = File.read("test/fixtures/NFe/NFe-enviarNF.xml")
     xml, hash = @webservice.assinarNF(xml)
     indSinc = "0"
     idLote = "1"

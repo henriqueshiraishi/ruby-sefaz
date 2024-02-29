@@ -3,6 +3,12 @@
 require 'json'
 require 'net/http'
 require 'savon'
+require 'prawn'
+require 'prawn/measurement_extensions'
+require 'barby'
+require 'barby/barcode/code_128'
+require 'barby/barcode/qr_code'
+require 'barby/outputter/prawn_outputter'
 
 require 'sefaz/base'
 require 'sefaz/configuration'
@@ -11,6 +17,7 @@ require 'sefaz/refinement'
 require 'sefaz/version'
 
 require 'sefaz/utils/connection'
+require 'sefaz/utils/prawn_helper'
 require 'sefaz/utils/signer'
 require 'sefaz/webservice/base'
 
@@ -21,6 +28,10 @@ require 'sefaz/webservice/nfe/dataset'
 require 'sefaz/webservice/nfe/validator'
 require 'sefaz/webservice/nfe/wsdl'
 
+require 'sefaz/webservice/sat/client'
+require 'sefaz/webservice/sat/templates/base'
+require 'sefaz/webservice/sat/templates/cupom_fiscal_55mm'
+require 'sefaz/webservice/sat/templates/cupom_fiscal_80mm'
 require 'sefaz/webservice/sat/dataset/cancel'
 require 'sefaz/webservice/sat/dataset/sale'
 

@@ -1,18 +1,23 @@
 PATH
   remote: .
   specs:
-    sefaz (1.2.0)
+    sefaz (1.3.0)
+      barby (~> 0.6.9)
+      prawn (~> 2.4.0)
+      rqrcode (~> 0.10.1)
       savon (~> 2.13.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.5)
+    addressable (2.8.6)
       public_suffix (>= 2.0.2, < 6.0)
-    akami (1.3.1)
+    akami (1.3.2)
       gyoku (>= 0.4.0)
       nokogiri
+    barby (0.6.9)
     builder (3.2.4)
+    chunky_png (1.4.0)
     date (3.3.4)
     gyoku (1.4.0)
       builder (>= 2.1.2)
@@ -27,25 +32,31 @@ GEM
     mini_mime (1.1.5)
     mini_portile2 (2.8.5)
     minitest (5.15.0)
-    net-imap (0.4.6)
+    net-imap (0.4.10)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0)
+    net-smtp (0.4.0.1)
       net-protocol
     nokogiri (1.15.5)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
     nori (2.6.0)
+    pdf-core (0.9.0)
+    prawn (2.4.0)
+      pdf-core (~> 0.9.0)
+      ttfunk (~> 1.7)
     public_suffix (5.0.4)
     racc (1.7.3)
-    rack (3.0.3)
+    rack (3.0.9.1)
     rake (13.0.6)
     rexml (3.2.6)
-    savon (2.13.0)
+    rqrcode (0.10.1)
+      chunky_png (~> 1.0)
+    savon (2.13.1)
       akami (~> 1.2)
       builder (>= 2.1.2)
       gyoku (~> 1.2)
@@ -55,6 +66,7 @@ GEM
       nori (~> 2.4)
       wasabi (~> 3.4)
     timeout (0.4.1)
+    ttfunk (1.7.0)
     wasabi (3.8.0)
       addressable
       httpi (~> 3.0)

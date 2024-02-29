@@ -8,6 +8,19 @@
 - enviarManifestacao service
 - exportarManifestacao service
 
+## [1.3.0] - 2024-02-29
+
+- Adding SEFAZ::Utils::PrawnHelper with utils methods for Prawn
+- Adding layout CupomFiscal55mm/CupomFiscal80mm
+- Adding base class to unify printing
+- Adding SEFAZ::Webservice::SAT::Client with exportarCF method
+- Adding new configuration field
+- Adding new exception (ValidationError)
+- Adding new refinement (mask!, to_number, numeric?, to_currency, with_delimiter and with_precision)
+- Adding prawn gem
+- Adding barby gem (with dependencies rqrcode)
+- Organizing tests (CFe/NFe and fixtures with examples/results)
+
 ## [1.2.0] - 2024-02-24
 
 - Adding SEFAZ::Webservice::SAT::Dataset::Cancel to cancel XML (CFe-SAT)

@@ -30,6 +30,9 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "savon", "~> 2.13.0"
+  spec.add_dependency "prawn", "~> 2.4.0"
+  spec.add_dependency "barby", "~> 0.6.9"
+  spec.add_dependency "rqrcode", "~> 0.10.1"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
