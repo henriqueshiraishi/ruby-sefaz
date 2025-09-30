@@ -9,7 +9,7 @@ module SEFAZ
 
           attr_accessor :ide
 
-          IDE = Struct.new("IDE", :CNPJ, :signAC, :numeroCaixa)
+          IDE = Struct.new(:CNPJ, :signAC, :numeroCaixa)
 
           def initialize(chCanc)
             @chCanc = chCanc

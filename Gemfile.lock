@@ -2,60 +2,99 @@ PATH
   remote: .
   specs:
     sefaz (1.3.0)
-      barby (~> 0.6.9)
+      barby (~> 0.6.8)
+      br_danfe (~> 0.17.8)
       prawn (~> 2.4.0)
-      rqrcode (~> 0.10.1)
+      rqrcode (~> 2.1.0)
       savon (~> 2.13.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.8.6)
-      public_suffix (>= 2.0.2, < 6.0)
+    activemodel (7.1.5.1)
+      activesupport (= 7.1.5.1)
+    activesupport (7.1.5.1)
+      base64
+      benchmark (>= 0.3)
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      logger (>= 1.4.2)
+      minitest (>= 5.1)
+      mutex_m
+      securerandom (>= 0.3)
+      tzinfo (~> 2.0)
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
     akami (1.3.2)
       gyoku (>= 0.4.0)
       nokogiri
-    barby (0.6.9)
-    builder (3.2.4)
+    barby (0.6.8)
+    base64 (0.2.0)
+    benchmark (0.4.0)
+    bigdecimal (3.1.9)
+    br_danfe (0.17.8)
+      barby (= 0.6.8)
+      br_documents (>= 0.1.3)
+      i18n (>= 0.8.6)
+      nokogiri (>= 1.8)
+      prawn (~> 2.4.0)
+      prawn-table (= 0.2.2)
+      rqrcode (~> 2.1.0)
+    br_documents (0.2.5)
+      activemodel (>= 4.0.0)
+      i18n (>= 0.6.5)
+    builder (3.3.0)
     chunky_png (1.4.0)
-    date (3.3.4)
+    concurrent-ruby (1.3.5)
+    connection_pool (2.5.0)
+    date (3.4.1)
+    drb (2.2.1)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
     httpi (3.0.1)
       rack
+    i18n (1.14.7)
+      concurrent-ruby (~> 1.0)
+    logger (1.7.0)
     mail (2.8.1)
       mini_mime (>= 0.1.1)
       net-imap
       net-pop
       net-smtp
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
-    minitest (5.15.0)
-    net-imap (0.4.10)
+    minitest (5.25.5)
+    mutex_m (0.3.0)
+    net-imap (0.4.19)
       date
       net-protocol
     net-pop (0.1.2)
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.4.0.1)
+    net-smtp (0.5.1)
       net-protocol
-    nokogiri (1.15.5)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.15.7-x86_64-linux)
       racc (~> 1.4)
     nori (2.6.0)
     pdf-core (0.9.0)
     prawn (2.4.0)
       pdf-core (~> 0.9.0)
       ttfunk (~> 1.7)
-    public_suffix (5.0.4)
-    racc (1.7.3)
-    rack (3.0.9.1)
-    rake (13.0.6)
-    rexml (3.2.6)
-    rqrcode (0.10.1)
+    prawn-table (0.2.2)
+      prawn (>= 1.3.0, < 3.0.0)
+    public_suffix (5.1.1)
+    racc (1.8.1)
+    rack (3.1.12)
+    rake (13.2.1)
+    rexml (3.4.1)
+    rqrcode (2.1.2)
       chunky_png (~> 1.0)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     savon (2.13.1)
       akami (~> 1.2)
       builder (>= 2.1.2)
@@ -65,15 +104,19 @@ GEM
       nokogiri (>= 1.8.1)
       nori (~> 2.4)
       wasabi (~> 3.4)
-    timeout (0.4.1)
-    ttfunk (1.7.0)
+    securerandom (0.3.2)
+    timeout (0.4.3)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     wasabi (3.8.0)
       addressable
       httpi (~> 3.0)
       nokogiri (>= 1.4.2)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   minitest (~> 5.0)
@@ -81,4 +124,4 @@ DEPENDENCIES
   sefaz!
 
 BUNDLED WITH
-   1.17.3
+   2.4.22

@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.summary     = "Integração com a Secretaria da Fazenda (SEFAZ)."
   spec.homepage    = "https://github.com/henriqueshiraishi/ruby-sefaz"
   spec.license     = "MIT"
-  spec.required_ruby_version = ">= 2.5.1"
+  spec.required_ruby_version = ">= 2.7.8"
 
   spec.metadata["homepage_uri"]    = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/henriqueshiraishi/ruby-sefaz"
@@ -31,8 +31,9 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "savon", "~> 2.13.0"
   spec.add_dependency "prawn", "~> 2.4.0"
-  spec.add_dependency "barby", "~> 0.6.9"
-  spec.add_dependency "rqrcode", "~> 0.10.1"
+  spec.add_dependency "barby", "~> 0.6.8"
+  spec.add_dependency "rqrcode", "~> 2.1.0"
+  spec.add_dependency "br_danfe", "~> 0.17.8"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
