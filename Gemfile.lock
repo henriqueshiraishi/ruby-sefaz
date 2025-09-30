@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    sefaz (1.3.0)
+    sefaz (1.4.0)
       barby (~> 0.6.8)
       br_danfe (~> 0.17.8)
       prawn (~> 2.4.0)

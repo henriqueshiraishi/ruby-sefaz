@@ -309,7 +309,7 @@ module SEFAZ
         def save(part_name)
           case part_name
           when "NFREF"
-            if @ide.is_a?(Struct::IDE) && @NFref.is_a?(Struct::NFREF)
+            if @ide.is_a?(IDE) && @NFref.is_a?(NFREF)
               case @NFref.mod
               when "01", "02"
                 @ide.NFref.push({ refNF: { cUF: @NFref.cUF, AAMM: @NFref.AAMM, CNPJ: @NFref.CNPJ, mod: @NFref.mod, serie: @NFref.serie, nNF: @NFref.nNF } })
@@ -322,11 +322,11 @@ module SEFAZ
               end
             end
           when "AUTXML"
-            if @autXML.is_a?(Struct::AUTXML)
+            if @autXML.is_a?(AUTXML)
               @listas[:autXML].push(@autXML.to_h)
             end
           when "DET"
-            if @det.is_a?(Struct::DET)
+            if @det.is_a?(DET)
               item = @det
               item.prod.veicProd = item.prod.veicProd.to_h
               item.prod.med = item.prod.med.to_h
@@ -377,67 +377,67 @@ module SEFAZ
               @listas[:det].push(item.to_h)
             end
           when "DI"
-            if @det.is_a?(Struct::DET) && @DI.is_a?(Struct::DI)
+            if @det.is_a?(DET) && @DI.is_a?(DI)
               @det.prod.DI.push(@DI.to_h)
             end
           when "ADI"
-            if @DI.is_a?(Struct::DI) && @adi.is_a?(Struct::ADI)
+            if @DI.is_a?(DI) && @adi.is_a?(ADI)
               @DI.adi.push(@adi.to_h)
             end
           when "DETEXPORT"
-            if @det.is_a?(Struct::DET) && @detExport.is_a?(Struct::DETEXPORT)
+            if @det.is_a?(DET) && @detExport.is_a?(DETEXPORT)
               item = @detExport
               item.exportInd = item.exportInd.to_h
               @det.prod.detExport.push(item.to_h)
             end
           when "RASTRO"
-            if @det.is_a?(Struct::DET) && @rastro.is_a?(Struct::RASTRO)
+            if @det.is_a?(DET) && @rastro.is_a?(RASTRO)
               @det.prod.rastro.push(@rastro.to_h)
             end
           when "ARMA"
-            if @det.is_a?(Struct::DET) && @arma.is_a?(Struct::ARMA)
+            if @det.is_a?(DET) && @arma.is_a?(ARMA)
               @det.prod.arma.push(@arma.to_h)
             end
           when "REBOQUE"
-            if @transp.is_a?(Struct::TRANSP) && @reboque.is_a?(Struct::REBOQUE)
+            if @transp.is_a?(TRANSP) && @reboque.is_a?(REBOQUE)
               @transp.reboque.push(@reboque.to_h)
             end
           when "VOL"
-            if @transp.is_a?(Struct::TRANSP) && @vol.is_a?(Struct::VOL)
+            if @transp.is_a?(TRANSP) && @vol.is_a?(VOL)
               @transp.vol.push(@vol.to_h)
             end
           when "LACRES"
-            if @vol.is_a?(Struct::VOL) && @lacres.is_a?(Struct::LACRES)
+            if @vol.is_a?(VOL) && @lacres.is_a?(LACRES)
               @vol.lacres.push(@lacres.to_h)
             end
           when "DUP"
-            if @cobr.is_a?(Struct::COBR) && @dup.is_a?(Struct::DUP)
+            if @cobr.is_a?(COBR) && @dup.is_a?(DUP)
               @cobr.dup.push(@dup.to_h)
             end
           when "DETPAG"
-            if @pag.is_a?(Struct::PAG) && @detPag.is_a?(Struct::DETPAG)
+            if @pag.is_a?(PAG) && @detPag.is_a?(DETPAG)
               item = @detPag
               item.card = item.card.to_h
               @pag.detPag.push(item.to_h)
             end
           when "OBSCONT"
-            if @infAdic.is_a?(Struct::INFADIC) && @obscont.is_a?(Struct::OBSCONT)
+            if @infAdic.is_a?(INFADIC) && @obscont.is_a?(OBSCONT)
               @infAdic.obsCont.push(@obscont.to_h)
             end
           when "OBSFISCO"
-            if @infAdic.is_a?(Struct::INFADIC) && @obsfisco.is_a?(Struct::OBSFISCO)
+            if @infAdic.is_a?(INFADIC) && @obsfisco.is_a?(OBSFISCO)
               @infAdic.obsFisco.push(@obsfisco.to_h)
             end
           when "PROCREF"
-            if @infAdic.is_a?(Struct::INFADIC) && @procref.is_a?(Struct::PROCREF)
+            if @infAdic.is_a?(INFADIC) && @procref.is_a?(PROCREF)
               @infAdic.procRef.push(@procref.to_h)
             end
           when "FORDIA"
-            if @cana.is_a?(Struct::CANA) && @forDia.is_a?(Struct::FORDIA)
+            if @cana.is_a?(CANA) && @forDia.is_a?(FORDIA)
               @cana.forDia.push(@forDia.to_h)
             end
           when "DEDUC"
-            if @cana.is_a?(Struct::CANA) && @deduc.is_a?(Struct::DEDUC)
+            if @cana.is_a?(CANA) && @deduc.is_a?(DEDUC)
               @cana.deduc.push(@deduc.to_h)
             end
           end

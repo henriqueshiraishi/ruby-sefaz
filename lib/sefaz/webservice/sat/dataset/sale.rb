@@ -129,7 +129,7 @@ module SEFAZ
           def save(part_name)
             case part_name
             when "DET"
-              if @det.is_a?(Struct::DET)
+              if @det.is_a?(DET)
                 item = @det
                 item.prod = item.prod.to_h
                 item.imposto.ICMS.ICMS00 = item.imposto.ICMS.ICMS00.to_h
@@ -157,11 +157,11 @@ module SEFAZ
                 @listas[:det].push(item.to_h)
               end
             when "OBSFISCODET"
-              if @det.is_a?(Struct::DET) && @obsfiscodet.is_a?(Struct::OBSFISCODET)
+              if @det.is_a?(DET) && @obsfiscodet.is_a?(OBSFISCODET)
                 @det.prod.obsFiscoDet.push(@obsfiscodet.to_h)
               end
             when "MP"
-              if @pgto.is_a?(Struct::PGTO) && @mp.is_a?(Struct::MP)
+              if @pgto.is_a?(PGTO) && @mp.is_a?(MP)
                 @pgto.MP.push(@mp.to_h)
               end
             end

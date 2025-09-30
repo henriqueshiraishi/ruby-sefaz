@@ -8,6 +8,12 @@
 - enviarManifestacao service
 - exportarManifestacao service
 
+## [1.4.0] - 2025-09-30
+
+- Adding export pdf file for enviarNF(DANFE), cancelarNF, enviarCCe and inutilizarNF
+- Fixing Dataset Structs and prawn warning
+- Changing ruby version
+
 ## [1.3.0] - 2024-02-29
 
 - Adding SEFAZ::Utils::PrawnHelper with utils methods for Prawn

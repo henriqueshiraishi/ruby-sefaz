@@ -5,6 +5,8 @@ module SEFAZ
     # Módulo com recursos adicionais para os templates baseados na Prawn
     module PrawnHelper
 
+      Prawn::Fonts::AFM.hide_m17n_warning = true
+
       def dash(doc, gap:, space:, line_width:, x1:, x2:, y:)
         doc.dash(gap, space: space)
         doc.line_width line_width
