@@ -11,9 +11,9 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (7.1.5.1)
-      activesupport (= 7.1.5.1)
-    activesupport (7.1.5.1)
+    activemodel (7.1.5.2)
+      activesupport (= 7.1.5.2)
+    activesupport (7.1.5.2)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -32,8 +32,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     barby (0.6.8)
-    base64 (0.2.0)
-    benchmark (0.4.0)
+    base64 (0.3.0)
+    benchmark (0.4.1)
     bigdecimal (3.1.9)
     br_danfe (0.17.8)
       barby (= 0.6.8)
@@ -49,9 +49,9 @@ GEM
     builder (3.3.0)
     chunky_png (1.4.0)
     concurrent-ruby (1.3.5)
-    connection_pool (2.5.0)
+    connection_pool (2.5.4)
     date (3.4.1)
-    drb (2.2.1)
+    drb (2.2.3)
     gyoku (1.4.0)
       builder (>= 2.1.2)
       rexml (~> 3.0)
