@@ -8,8 +8,8 @@ class SEFAZ::Webservice::NFE::TestClient < Minitest::Test
     @webservice = SEFAZ::Webservice::NFE::Client.new
     @webservice.setaAmbiente({ ambiente: "2", uf: "35", cnpj: "21684155000164" })
     @webservice.setaRespTecnico({ cnpj: "00.000.000/0000-00", contato: "EMPRESA", email: "contato@empresa.com.br", fone: "+551100000000", idCSRT: "01", CSRT: "G8063VRTNDMO886SFNK5LDUDEI24XJ22YIPO" })
-    @webservice.setaPFXTss({ pfx: File.read("certs/server.pfx"), senha: "020607" })
-    @webservice.setaPFXAss({ pfx: File.read("certs/client.pfx"), senha: "1234" })
+    # @webservice.setaPFXTss({ pfx: File.read("certs/server.pfx"), senha: "020607" })
+    # @webservice.setaPFXAss({ pfx: File.read("certs/client.pfx"), senha: "1234" })
   end
 
   def test_if_the_gerarInfRespTec_is_working
@@ -18,6 +18,41 @@ class SEFAZ::Webservice::NFE::TestClient < Minitest::Test
     xml, hash = @webservice.gerarInfRespTec(xml)
     refute_nil xml
     assert_equal hash[:NFe][:infNFe][:infRespTec][:hashCSRT], "Njk2YmZhMmRlMTBjZTE3ZWFlZTNlYTgxMjM2Mzk4NjdjODJiOGEwYw=="
+  end
+
+  def test_if_the_gerarDANFE_is_working_when_nf_is_preview
+    xml = File.read("test/fixtures/NFe/NFe-enviarNF.xml")
+    pdf = @webservice.gerarDANFE(xml, 'test/fixtures/logotipo.png', { height: 100, width: 100 })
+    File.open("test/fixtures/NFe/pdf/NFe-DANFE-Visualizar.pdf", "w") { |f| f.write(pdf) }
+    refute_nil pdf
+  end
+
+  def test_if_the_gerarDANFE_is_working_when_nf_is_authorized
+    xml = File.read("test/fixtures/NFe/NFe-enviarNF-Autorizado.xml")
+    pdf = @webservice.gerarDANFE(xml, 'test/fixtures/logotipo.png', { height: 100, width: 100 })
+    File.open("test/fixtures/NFe/pdf/NFe-DANFE-Autorizado.pdf", "w") { |f| f.write(pdf) }
+    refute_nil pdf
+  end
+
+  def test_if_gerarDocCancelamento_is_working
+    xml = File.read("test/fixtures/NFe/NFe-cancelarNF-Autorizado.xml")
+    pdf = @webservice.gerarDocCancelamento(xml)
+    File.open("test/fixtures/NFe/pdf/NFe-Documento-Cancelado.pdf", "w") { |f| f.write(pdf) }
+    refute_nil pdf
+  end
+
+  def test_if_gerarDocCartaCorrecao_is_working
+    xml = File.read("test/fixtures/NFe/CCe-enviarCCe-Autorizado.xml")
+    pdf = @webservice.gerarDocCartaCorrecao(xml)
+    File.open("test/fixtures/NFe/pdf/CCe-Documento-Autorizado.pdf", "w") { |f| f.write(pdf) }
+    refute_nil pdf
+  end
+
+  def test_if_gerarDocInutilizacao_is_working
+    xml = File.read("test/fixtures/NFe/NFe-inutilizarNF-Autorizado.xml")
+    pdf = @webservice.gerarDocInutilizacao(xml)
+    File.open("test/fixtures/NFe/pdf/NFe-Documento-Inutilizado.pdf", "w") { |f| f.write(pdf) }
+    refute_nil pdf
   end
 
   def test_if_the_statusDoServico_is_working

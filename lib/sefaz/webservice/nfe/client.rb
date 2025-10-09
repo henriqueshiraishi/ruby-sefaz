@@ -8,7 +8,8 @@ module SEFAZ
 
         SERVICES = %i[ setaAmbiente setaRespTecnico setaPFXTss setaPFXAss statusDoServico consultarNF consultarCadastro consultarRecibo
                        assinarNF validarNF auditarNF inutilizarNF exportarInutilizarNF enviarInutilizarNF calculaChaveInutilizacao
-                       enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF enviarCCe exportarCCe enviarNF enviarLoteNF calculaChaveNF]
+                       enviarEvento enviarLoteDeEvento cancelarNF exportarCancelarNF enviarCCe exportarCCe enviarNF enviarLoteNF calculaChaveNF
+                       gerarDANFE gerarDocCancelamento gerarDocCartaCorrecao]
     
         # Métodos de Configuração:
         # - setaAmbiente
@@ -45,6 +46,11 @@ module SEFAZ
         #   - exportarManifestacao      (PENDENTE) (EVENTO)
         # - enviarEvento
         # - enviarLoteDeEvento
+        # - gerarDANFE
+        # - gerarDANFCE                 (PENDENTE)
+        # - gerarDocCancelamento
+        # - gerarDocCartaCorrecao
+        # - gerarDocInutilizacao        (PENDENTE)
         # - gerarLeiauteEvento          (PRIVADO)
     
         def initialize
@@ -380,6 +386,45 @@ module SEFAZ
           conn = SEFAZ::Webservice::NFE::Connection.new(@pkcs12Tss, wsdl, versao, @uf)
           resp = conn.call(:nfe_recepcao_evento, hash)
           return [resp.body.to_xml!, resp.body]
+        end
+
+        # Gerar DANFE - Gera o Documento Auxiliar da Nota Fiscal Eletrônica (DANFE) em PDF
+        # @documento(Hash ou String) = XML ou HASH que será tratado
+        # @logo_path(String) = Caminho do arquivo de logo (opcional)
+        # @logo_dimensions(Hash) = Dimensões do logo (opcional) Exemplo: { width: 100, height: 100 }
+        def gerarDANFE(documento, logo_path = nil, logo_dimensions = nil)
+          xml = (documento.is_a?(Hash) ? documento.to_xml! : documento)
+          doc = BrDanfe::Danfe.new(xml)
+          
+          if Configuration.default.nfe_default_logotipo_enabled
+            doc.options.logo = Configuration.default.nfe_default_logotipo_path
+            doc.options.logo_dimensions = Configuration.default.nfe_default_logotipo_dimensions
+          end
+
+          doc.options.logo = logo_path if logo_path
+          doc.options.logo_dimensions = logo_dimensions if logo_dimensions
+          return doc.render_pdf
+        end
+
+        # Gerar Documento de Cancelamento em PDF
+        # @documento(Hash ou String) = XML ou HASH que será tratado
+        def gerarDocCancelamento(documento)
+          hash = (documento.is_a?(Hash) ? documento : documento.to_hash!)
+          SEFAZ::Webservice::NFE::Templates::EventoCancelamento.new.render(hash)
+        end
+
+        # Gerar Documento de Carta de Correção Eletrônica (CCe) em PDF
+        # @documento(Hash ou String) = XML ou HASH que será tratado
+        def gerarDocCartaCorrecao(documento)
+          hash = (documento.is_a?(Hash) ? documento : documento.to_hash!)
+          SEFAZ::Webservice::NFE::Templates::EventoCartaCorrecao.new.render(hash)
+        end
+
+        # Gerar Documento de Inutilização em PDF
+        # @documento(Hash ou String) = XML ou HASH que será tratado
+        def gerarDocInutilizacao(documento)
+          hash = (documento.is_a?(Hash) ? documento : documento.to_hash!)
+          SEFAZ::Webservice::NFE::Templates::EventoInutilizacao.new.render(hash)
         end
     
         # Gera Informações do Responsável Técnico - Calcula o hashCSRT e cria o grupo do responsável técnico

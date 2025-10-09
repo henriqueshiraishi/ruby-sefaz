@@ -7,6 +7,11 @@ module SEFAZ
     # Configuração da formatação de valores monetários
     attr_accessor :currency_format
 
+    # Configuração do DANFE
+    attr_accessor :nfe_default_logotipo_enabled
+    attr_accessor :nfe_default_logotipo_path
+    attr_accessor :nfe_default_logotipo_dimensions
+
     # CF-e (Cupom Fiscal Eletrônico)
     attr_accessor :cfe_qr_code_aplicativo
     attr_accessor :cfe_cMP_cod_desc
@@ -21,6 +26,9 @@ module SEFAZ
 
     def initialize
       @currency_format = { delimiter: ".", separator: ",", unit: "", precision: 2, position: "before" }
+      @nfe_default_logotipo_enabled = true
+      @nfe_default_logotipo_path = "lib/sefaz/assets/NFe_logo.png"
+      @nfe_default_logotipo_dimensions = { width: 100, height: 100 }
       @cfe_qr_code_aplicativo = "De olho na nota"
       @cfe_cMP_cod_desc = {
         "01" => "Dinheiro",
