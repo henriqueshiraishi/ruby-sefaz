@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+- Adding IBS/CBS/IS support (NT 2024.002 - Reforma Tributária)
 - ConsultarGTIN service
 - consultarDistribuicaoDFe service
 - consultarDistribuicaoDFeChave service

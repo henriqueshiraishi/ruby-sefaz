@@ -31,7 +31,7 @@ module SEFAZ
         COMB          = Struct.new(:cProdANP, :descANP, :pGLP, :pGNn, :pGNi, :vPart, :CODIF, :qTemp, :UFCons, :CIDE, :encerrante)
         CIDE          = Struct.new(:qBCProd, :vAliqProd, :vCIDE)
         ENCERRANTE    = Struct.new(:nBico, :nBomba, :nTanque, :vEncIni, :vEncFin)
-        IMPOSTO       = Struct.new(:vTotTrib, :ICMS, :ICMSUFDest, :IPI, :II, :PIS, :PISST, :COFINS, :COFINSST, :ISSQN)
+        IMPOSTO       = Struct.new(:vTotTrib, :ICMS, :ICMSUFDest, :IPI, :II, :PIS, :PISST, :COFINS, :COFINSST, :ISSQN, :IBSCBS)
         ICMS          = Struct.new(:ICMS00, :ICMS10, :ICMS20, :ICMS30, :ICMS40, :ICMS51, :ICMS60, :ICMS70, :ICMS90, :ICMSPart, :ICMSST, :ICMSSN101, :ICMSSN102, :ICMSSN201, :ICMSSN202, :ICMSSN500, :ICMSSN900)
         ICMS00        = Struct.new(:orig, :CST, :modBC, :vBC, :pICMS, :vICMS, :pFCP, :vFCP)
         ICMS10        = Struct.new(:orig, :CST, :modBC, :vBC, :pICMS, :vICMS, :vBCFCP, :pFCP, :vFCP, :modBCST, :pMVAST, :pRedBCST, :vBCST, :pICMSST, :vICMSST, :vBCFCPST, :pFCPST, :vFCPST)
@@ -68,9 +68,14 @@ module SEFAZ
         COFINSOutr    = Struct.new(:CST, :vBC, :pCOFINS, :qBCProd, :vAliqProd, :vCOFINS)
         COFINSST      = Struct.new(:vBC, :pCOFINS, :qBCProd, :vAliqProd, :vCOFINS)
         ISSQN         = Struct.new(:vBC, :vAliq, :vISSQN, :cMunFG, :cListServ, :vDeducao, :vOutro, :vDescIncond, :vDescCond, :vISSRet, :indISS, :cServico, :cMun, :cPais, :nProcesso, :indIncentivo)
+        IBSCBS        = Struct.new(:CST, :cClassTrib, :vBC, :pIBS, :pCBS, :vIBS, :vCBS, :gIS, :gIBSCredPres, :gCBSCredPres)
+        GIS           = Struct.new(:CST, :cClassTrib, :vBC, :pIS, :vIS)
+        GIBSCREDPRES  = Struct.new(:vCredPres, :vCredPresCondSus)
+        GCBSCREDPRES  = Struct.new(:vCredPres, :vCredPresCondSus)
         IMPOSTODEVOL  = Struct.new(:pDevol, :IPI)
         IPIDEVOL      = Struct.new(:vIPIDevol)
-        TOTAL         = Struct.new(:ICMSTot, :ISSQNtot, :retTrib)
+        TOTAL         = Struct.new(:ICMSTot, :ISSQNtot, :retTrib, :IBSCBSTot)
+        IBSCBSTot     = Struct.new(:vIBS, :vCBS, :vIS, :vCredPres, :vCredPresCondSus)
         ICMSTot       = Struct.new(:vBC, :vICMS, :vICMSDeson, :vFCPUFDest, :vICMSUFDest, :vICMSUFRemet, :vFCP, :vBCST, :vST, :vFCPST, :vFCPSTRet, :vProd, :vFrete, :vSeg, :vDesc, :vII, :vIPI, :vIPIDevol, :vPIS, :vCOFINS, :vOutro, :vNF, :vTotTrib)
         ISSQNtot      = Struct.new(:vServ, :vBC, :vISS, :vPIS, :vCOFINS, :dCompet, :vDeducao, :vOutro, :vDescIncond, :vDescCond, :vISSRet, :cRegTrib)
         RETTrib       = Struct.new(:vRetPIS, :vRetCOFINS, :vRetCSLL, :vBCIRRF, :vIRRF, :vBCRetPrev, :vRetPrev)
@@ -117,6 +122,7 @@ module SEFAZ
           @total.ICMSTot      = ICMSTot.new
           @total.ISSQNtot     = ISSQNtot.new
           @total.retTrib      = RETTrib.new
+          @total.IBSCBSTot    = IBSCBSTot.new
           @transp             = TRANSP.new
           @transp.transporta  = TRANSPORTA.new
           @transp.retTransp   = RETTRANSP.new
@@ -168,6 +174,7 @@ module SEFAZ
           hash[:NFe][:infNFe][:total][:ICMSTot] = @total.ICMSTot.to_h
           hash[:NFe][:infNFe][:total][:ISSQNtot] = @total.ISSQNtot.to_h
           hash[:NFe][:infNFe][:total][:retTrib] = @total.retTrib.to_h
+          hash[:NFe][:infNFe][:total][:IBSCBSTot] = @total.IBSCBSTot.to_h
           hash[:NFe][:infNFe][:transp] = @transp.to_h
           hash[:NFe][:infNFe][:transp][:transporta] = @transp.transporta.to_h
           hash[:NFe][:infNFe][:transp][:retTransp] = @transp.retTransp.to_h
@@ -244,6 +251,10 @@ module SEFAZ
             @det.imposto.COFINS.COFINSOutr = COFINSOutr.new
             @det.imposto.COFINSST = COFINSST.new
             @det.imposto.ISSQN = ISSQN.new
+            @det.imposto.IBSCBS = IBSCBS.new
+            @det.imposto.IBSCBS.gIS = GIS.new
+            @det.imposto.IBSCBS.gIBSCredPres = GIBSCREDPRES.new
+            @det.imposto.IBSCBS.gCBSCredPres = GCBSCREDPRES.new
             @det.impostoDevol = IMPOSTODEVOL.new
             @det.impostoDevol.IPI = IPIDEVOL.new
             @det
@@ -370,6 +381,10 @@ module SEFAZ
               item.imposto.COFINS = item.imposto.COFINS.to_h
               item.imposto.COFINSST = item.imposto.COFINSST.to_h
               item.imposto.ISSQN = item.imposto.ISSQN.to_h
+              item.imposto.IBSCBS.gIS = item.imposto.IBSCBS.gIS.to_h
+              item.imposto.IBSCBS.gIBSCredPres = item.imposto.IBSCBS.gIBSCredPres.to_h
+              item.imposto.IBSCBS.gCBSCredPres = item.imposto.IBSCBS.gCBSCredPres.to_h
+              item.imposto.IBSCBS = item.imposto.IBSCBS.to_h
               item.imposto = item.imposto.to_h
               item.impostoDevol.IPI = item.impostoDevol.IPI.to_h
               item.impostoDevol = item.impostoDevol.to_h
