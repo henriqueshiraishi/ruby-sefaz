@@ -622,6 +622,30 @@ end
   det.imposto.ISSQN.nProcesso = ""
   det.imposto.ISSQN.indIncentivo = ""
 
+  # IBS/CBS/IS - Reforma Tributária (NT 2024.002)
+  det.imposto.IBSCBS.CST = ""
+  det.imposto.IBSCBS.cClassTrib = ""
+  det.imposto.IBSCBS.vBC = ""
+  det.imposto.IBSCBS.pIBS = ""
+  det.imposto.IBSCBS.pCBS = ""
+  det.imposto.IBSCBS.vIBS = ""
+  det.imposto.IBSCBS.vCBS = ""
+
+  # Imposto Seletivo (IS)
+  det.imposto.IBSCBS.gIS.CST = ""
+  det.imposto.IBSCBS.gIS.cClassTrib = ""
+  det.imposto.IBSCBS.gIS.vBC = ""
+  det.imposto.IBSCBS.gIS.pIS = ""
+  det.imposto.IBSCBS.gIS.vIS = ""
+
+  # Crédito presumido IBS
+  det.imposto.IBSCBS.gIBSCredPres.vCredPres = ""
+  det.imposto.IBSCBS.gIBSCredPres.vCredPresCondSus = ""
+
+  # Crédito presumido CBS
+  det.imposto.IBSCBS.gCBSCredPres.vCredPres = ""
+  det.imposto.IBSCBS.gCBSCredPres.vCredPresCondSus = ""
+
   # Informação do imposto devolvido
   det.impostoDevol.pDevol = ""
   det.impostoDevol.IPI.vIPIDevol = ""
@@ -677,6 +701,13 @@ end
 @dataset.total.retTrib.vIRRF = ""
 @dataset.total.retTrib.vBCRetPrev = ""
 @dataset.total.retTrib.vRetPrev = ""
+
+# Total IBS/CBS/IS - Reforma Tributária (NT 2024.002)
+@dataset.total.IBSCBSTot.vIBS = ""
+@dataset.total.IBSCBSTot.vCBS = ""
+@dataset.total.IBSCBSTot.vIS = ""
+@dataset.total.IBSCBSTot.vCredPres = ""
+@dataset.total.IBSCBSTot.vCredPresCondSus = ""
 
 # Transportadora
 @dataset.transp.modFrete = ""
